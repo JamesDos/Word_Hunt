@@ -16,6 +16,9 @@ let () =
   main ();
   Bogue.quit () *)
 
+(*A character generator that generates letters based on how common they
+  are found in the English language*)
+
 let () = Random.self_init ()
 
 let random_char () =
@@ -57,6 +60,21 @@ let random_char () =
   in
   find_char cdf
 
+(*Reads the text file Dictionary and makes it into a list*)
+let txt_to_list dictionary =
+  let ic = open_in dictionary in
+  let rec loop acc =
+    try
+      let line = input_line ic in
+      loop (line :: acc)
+    with End_of_file ->
+      close_in ic;
+      acc
+  in
+  loop []
+
+let dictionary_list = txt_to_list "Dictionary"
+let is_word word = List.mem word dictionary_list
 let board = Array.make_matrix 4 4 'a'
 
 let fill_board array_2d =
