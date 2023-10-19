@@ -10,7 +10,7 @@ let main () =
   in
   let layout = L.tower_of_w [ border ] in
   let game_board =
-    Table.of_array ~w:100 ~h:100 [ "b"; "b"; "b"; "b" ]
+    Table.of_array ~w:500 ~h:500 [ "b"; "b"; "b"; "b" ]
       (Array.make_matrix 3 4 "b")
   in
   let window =

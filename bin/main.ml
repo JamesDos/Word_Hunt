@@ -1,10 +1,9 @@
 (*Testing*)
 
-(*A character generator that generates letters based on how common they
-  are found in the English language*)
-
 let () = Random.self_init ()
 
+(*A character generator that generates letters based on how common they
+  are found in the English language*)
 let random_char () =
   let cdf =
     [
@@ -57,10 +56,16 @@ let txt_to_list dictionary =
   in
   loop []
 
+(** is_word returns whether [word] is a valid word in the english dictionary*)
 let dictionary_list = txt_to_list "Dictionary"
+
 let is_word word = List.mem word dictionary_list
+
+(*4x4 char array matrix*)
 let board = Array.make_matrix 4 4 'a'
 
+(**fill_board fills the matrix [array_2d] with random characters using 
+  random_char()*)
 let fill_board array_2d =
   let rows = Array.length array_2d in
   let cols = Array.length array_2d.(0) in
@@ -74,6 +79,7 @@ let fill_board array_2d =
 
 let game_board = fill_board board
 
+(**print_board prints the matrix [array_2d]*)
 let print_board array_2d =
   let rows = Array.length array_2d in
   let cols = Array.length array_2d.(0) in
@@ -87,3 +93,29 @@ let print_board array_2d =
 
 let () = print_board game_board
 let () = print_string (string_of_bool (is_word "zniocius"))
+
+let is_corner point =
+  point = (0, 0) || point = (0, 3) || point = (3, 0) || point = (3, 3)
+
+let is_edge point =
+  match is_corner point with
+  | true -> false
+  | false -> fst point = 0 || fst point = 3 || snd point = 0 || snd point = 3
+
+let possible_moves point =
+  match point with
+  | x, y ->
+      [
+        (x + 1, y);
+        (x - 1, y);
+        (x, y + 1);
+        (x, y - 1);
+        (x + 1, y + 1);
+        (x + 1, y - 1);
+        (x - 1, y + 1);
+        (x - 1, y - 1);
+      ]
+
+let is_valid_move point = match point with x, y -> x >= 0 && y <= 3
+let valid_moves moves_list = List.filter is_valid_move moves_list
+(*let () = print_endline (valid_moves (possible_moves (0, 0))))*)
