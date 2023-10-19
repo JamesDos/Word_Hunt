@@ -1,20 +1,4 @@
 (*Testing*)
-(*
-open Bogue
-module W = Widget
-module L = Layout
-
-let main () =
-  let b = W.check_box () in
-  let l = W.label "Hello world" in
-  let layout = L.flat_of_w [ b; l ] in
-
-  let board = Bogue.of_layout layout in
-  Bogue.run board
-
-let () =
-  main ();
-  Bogue.quit () *)
 
 (*A character generator that generates letters based on how common they
   are found in the English language*)
@@ -102,3 +86,4 @@ let print_board array_2d =
   done
 
 let () = print_board game_board
+let () = print_string (string_of_bool (is_word "zniocius"))
