@@ -1,0 +1,30 @@
+(lang dune 3.10)
+(name Builder)
+(sections (lib .) (libexec .) (doc ../../doc/Builder))
+(files
+ (lib
+  (META
+   builder.a
+   builder.cma
+   builder.cmi
+   builder.cmt
+   builder.cmx
+   builder.cmxa
+   builder.ml
+   dune-package
+   opam))
+ (libexec (builder.cmxs))
+ (doc (README.md)))
+(library
+ (name Builder)
+ (kind normal)
+ (archives (byte builder.cma) (native builder.cmxa))
+ (plugins (byte builder.cma) (native builder.cmxs))
+ (native_archives builder.a)
+ (main_module_name Builder)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name builder)
+   (visibility public)
+   (source (path Builder) (impl (path builder.ml))))))

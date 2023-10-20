@@ -1,9 +1,4 @@
 (executable
- (name main)
- (libraries bogue)
- (modules main))
-
-(executable
  (name gui)
  (libraries bogue)
  (modules gui))

@@ -1,0 +1,6 @@
+description = ""
+requires = ""
+archive(byte) = "builder.cma"
+archive(native) = "builder.cmxa"
+plugin(byte) = "builder.cma"
+plugin(native) = "builder.cmxs"
