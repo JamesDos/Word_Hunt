@@ -57,9 +57,9 @@ module BuildBoard = struct
     in
     loop []
 
-  (** is_word returns whether [word] is a valid word in the english dictionary*)
   let dictionary_list = txt_to_list "Dictionary"
 
+  (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
 
   (*4x4 char array matrix*)
@@ -93,7 +93,6 @@ module BuildBoard = struct
     done
 
   let () = print_board game_board
-  let () = print_string (string_of_bool (is_word "zniocius"))
 
   let is_corner point =
     point = (0, 0) || point = (0, 3) || point = (3, 0) || point = (3, 3)
@@ -103,6 +102,7 @@ module BuildBoard = struct
     | true -> false
     | false -> fst point = 0 || fst point = 3 || snd point = 0 || snd point = 3
 
+  (** Given a point (i, j), returns a list of all 8 surrounding points*)
   let possible_moves point =
     match point with
     | x, y ->
@@ -118,10 +118,41 @@ module BuildBoard = struct
         ]
 
   let is_valid_move point = match point with x, y -> x >= 0 && y <= 3
+
+  (** Given a list of points, returns a list contain only valid locations*)
   let valid_moves moves_list = List.filter is_valid_move moves_list
 
-  (*let () = print_endline (valid_moves (possible_moves (0, 0))))*)
-  let _ = possible_moves (0, 0)
-  let _ = valid_moves []
-  let _ = is_edge (0, 0)
+  (** Given a character [x], finds the locations in [board] that has that 
+      character. char_loc x board is a list of tuples *)
+  let find_chars x board =
+    let rec find_chars_helper x board i j acc =
+      if i >= Array.length board then List.rev acc
+      else if j >= Array.length board.(0) then
+        find_chars_helper x board (i + 1) 0 acc
+      else if board.(i).(j) = x then
+        find_chars_helper x board i (j + 1) ((i, j) :: acc)
+      else find_chars_helper x board i (j + 1) acc
+    in
+    find_chars_helper x board 0 0 []
+
+  (** Given a lists of locations [lst], returns whether one of the locations is 
+      valid according to valid_move*)
+  let rec all_valid_chars (lst : (int * int) list) : bool =
+    match lst with
+    | [] -> false
+    | (i, j) :: [] -> is_valid_move (i, j)
+    | (i1, j1) :: (i2, j2) :: t ->
+        is_valid_move (i1, j1)
+        && List.mem (i2, j2) (valid_moves (possible_moves (i1, j2)))
+        && all_valid_chars ((i2, j2) :: t)
+
+  let is_valid_word (word : string) (board : char array array) : bool =
+    let rec is_valid_word_aux str index =
+      if index < String.length str then
+        let char_at_index = String.get str index in
+        let location = find_chars char_at_index board in
+        all_valid_chars location && is_valid_word_aux str (index + 1)
+      else true
+    in
+    is_valid_word_aux word 0
 end

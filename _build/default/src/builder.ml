@@ -57,9 +57,9 @@ module BuildBoard = struct
     in
     loop []
 
-  (** is_word returns whether [word] is a valid word in the english dictionary*)
   let dictionary_list = txt_to_list "Dictionary"
 
+  (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
 
   (*4x4 char array matrix*)
@@ -93,7 +93,7 @@ module BuildBoard = struct
     done
 
   let () = print_board game_board
-  let () = print_string (string_of_bool (is_word "zniocius"))
+  (*let () = print_string (string_of_bool (is_word "zniocius"))*)
 
   let is_corner point =
     point = (0, 0) || point = (0, 3) || point = (3, 0) || point = (3, 3)
