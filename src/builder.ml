@@ -1,7 +1,27 @@
 let () = Random.self_init ()
 
-module Empty = struct end
+(**
+module Dictionary = struct
+  (*Reads the text file [dictionary] and makes it into a list*)
+  let txt_to_list dictionary =
+    let ic = open_in dictionary in
+    let rec loop acc =
+      try
+        let line = input_line ic in
+        loop (line :: acc)
+      with End_of_file ->
+        close_in ic;
+        acc
+    in
+    loop []
 
+  (** List of all the valid words in the dictionary*)
+  let dictionary_list = txt_to_list "data/scrabble_dict.txt"
+
+  (** is_word returns whether [word] is a valid word in the english dictionary*)
+  let is_word word = List.mem word dictionary_list
+end
+*)
 module BuildBoard = struct
   (*A character generator that generates letters based on how common they
     are found in the English language*)
@@ -44,24 +64,6 @@ module BuildBoard = struct
     in
     find_char cdf
 
-  (*Reads the text file Dictionary and makes it into a list*)
-  let txt_to_list dictionary =
-    let ic = open_in dictionary in
-    let rec loop acc =
-      try
-        let line = input_line ic in
-        loop (line :: acc)
-      with End_of_file ->
-        close_in ic;
-        acc
-    in
-    loop []
-
-  let dictionary_list = txt_to_list "Dictionary"
-
-  (** is_word returns whether [word] is a valid word in the english dictionary*)
-  let is_word word = List.mem word dictionary_list
-
   (*4x4 char array matrix*)
   let board = Array.make_matrix 4 4 'a'
 
@@ -92,17 +94,24 @@ module BuildBoard = struct
       print_newline ()
     done
 
-  let () = print_board game_board
-
+  (** Determines if [point] is a corner tile of the board*)
   let is_corner point =
     point = (0, 0) || point = (0, 3) || point = (3, 0) || point = (3, 3)
 
+  (** Determines if [point] is an edge tile of the board. is_edge [point] is
+     false is [point] is a corner tile of the board *)
   let is_edge point =
     match is_corner point with
     | true -> false
-    | false -> fst point = 0 || fst point = 3 || snd point = 0 || snd point = 3
+    | false -> (
+        match point with
+        | x, y ->
+            if x = 0 || x = 3 then y = 1 || y = 2
+            else if x = 1 || x = 2 then y = 0 || y = 3
+            else false)
 
-  (** Given a point (i, j), returns a list of all 8 surrounding points*)
+  (** Helper function used by valid_moves. 
+  Given a point (i, j), returns a list of all 8 surrounding points*)
   let possible_moves point =
     match point with
     | x, y ->
@@ -117,10 +126,13 @@ module BuildBoard = struct
           (x - 1, y - 1);
         ]
 
-  let is_valid_move point = match point with x, y -> x >= 0 && y <= 3
+  (** Helper function used by valid_moves. 
+  Determines if a location [point] is within the bounds of the board*)
+  let is_valid_pos point =
+    match point with x, y -> x >= 0 && x <= 3 && y <= 3 && y >= 0
 
-  (** Given a list of points, returns a list contain only valid locations*)
-  let valid_moves moves_list = List.filter is_valid_move moves_list
+  (** Given a point, returns a list contain only valid locations*)
+  let valid_moves point = List.filter is_valid_pos (possible_moves point)
 
   (** Given a character [x], finds the locations in [board] that has that 
       character. char_loc x board is a list of tuples *)
@@ -140,19 +152,24 @@ module BuildBoard = struct
   let rec all_valid_chars (lst : (int * int) list) : bool =
     match lst with
     | [] -> false
-    | (i, j) :: [] -> is_valid_move (i, j)
+    | (i, j) :: [] -> is_valid_pos (i, j)
     | (i1, j1) :: (i2, j2) :: t ->
-        is_valid_move (i1, j1)
-        && List.mem (i2, j2) (valid_moves (possible_moves (i1, j2)))
+        is_valid_pos (i1, j1)
+        && List.mem (i2, j2) (valid_moves (i1, j2))
         && all_valid_chars ((i2, j2) :: t)
 
+  let valid_next_tile start next = List.mem next (valid_moves start)
+
+  (** Given a word [word], is_valid_word determined whether [word] is a 
+    valid word in [board]. That is word is not out of bounds, is in the dictionary, 
+    and each letter is of [word] is adjacent to each other and unused*)
   let is_valid_word (word : string) (board : char array array) : bool =
-    let rec is_valid_word_aux str index =
+    let rec is_valid_word_aux str index acc =
       if index < String.length str then
         let char_at_index = String.get str index in
         let location = find_chars char_at_index board in
-        all_valid_chars location && is_valid_word_aux str (index + 1)
+        all_valid_chars location && is_valid_word_aux str (index + 1) []
       else true
     in
-    is_valid_word_aux word 0
+    is_valid_word_aux word 0 []
 end

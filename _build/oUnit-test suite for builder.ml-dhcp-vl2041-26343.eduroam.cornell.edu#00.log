@@ -1,0 +1,187 @@
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Runner: processes
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Chooser: simple
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration suite_name = "test suite for builder.ml"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration cache_filename = "/Users/James/Desktop/cs 3110/3110_Final_Project/_build/oUnit-$(suite_name).cache"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration run_gc_full_major = "true"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration display = "true"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration results_style_1_X = "false"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration testdata_dir = "none"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration health_check_interval = "1."
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration verbose = "false"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration chooser = "simple"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration output_html_dir = "none"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration processes_kill_period = "5."
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration runner = "processes"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration shards = "2"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration processes_grace_period = "5."
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration log_encoding = "utf-8"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration output_junit_file = "none"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration ci = "false"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Configuration output_file = "/Users/James/Desktop/cs 3110/3110_Final_Project/_build/oUnit-$(suite_name)-$(shard_id).log"
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Using 2 workers maximum.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Starting worker number dhcp-vl2041-26343.eduroam.cornell.edu#01.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Worker dhcp-vl2041-26343.eduroam.cornell.edu#01 started.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Starting worker number dhcp-vl2041-26343.eduroam.cornell.edu#02.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Worker dhcp-vl2041-26343.eduroam.cornell.edu#02 started.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:1:bottom left corner tile, test suite for builder.ml:0:top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:0:top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:1:bottom left corner tile, test suite for builder.ml:0:top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:0:top left corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:1:bottom left corner tile, test suite for builder.ml:0:top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:0:top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:1:bottom left corner tile, test suite for builder.ml:0:top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:2:top right corner tile, test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:2:top right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:2:top right corner tile, test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:2:top right corner tile, test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:2:top right corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:2:top right corner tile, test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:1:bottom left corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:2:top right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:2:top right corner tile, test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:3:bottom right corner tile, test suite for builder.ml:1:bottom left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:4:top edge tile, test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:4:top edge tile, test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:4:top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:4:top edge tile, test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:4:top edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:4:top edge tile, test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:3:bottom right corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:4:top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:4:top edge tile, test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:5:left edge tile, test suite for builder.ml:3:bottom right corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:6:center tile, test suite for builder.ml:5:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:5:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:6:center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:6:center tile, test suite for builder.ml:5:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:5:left edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:6:center tile, test suite for builder.ml:5:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:5:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:6:center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:6:center tile, test suite for builder.ml:5:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:6:center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:7:corner tile, test suite for builder.ml:6:center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:8:left edge tile, test suite for builder.ml:7:corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:7:corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:8:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:8:left edge tile, test suite for builder.ml:7:corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:7:corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:8:left edge tile, test suite for builder.ml:7:corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:7:corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:8:left edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:8:left edge tile, test suite for builder.ml:7:corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:8:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:9:bottom edge tile, test suite for builder.ml:8:left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:10:center tile, test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:10:center tile, test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:10:center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:10:center tile, test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:9:bottom edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:10:center tile, test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:10:center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:10:center tile, test suite for builder.ml:9:bottom edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:10:center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:11:valid_moves top left corner tile, test suite for builder.ml:10:center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:12:valid_moves bottom right coner tile, test suite for builder.ml:11:valid_moves top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:11:valid_moves top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:12:valid_moves bottom right coner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:12:valid_moves bottom right coner tile, test suite for builder.ml:11:valid_moves top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:11:valid_moves top left corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:12:valid_moves bottom right coner tile, test suite for builder.ml:11:valid_moves top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:11:valid_moves top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:12:valid_moves bottom right coner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:12:valid_moves bottom right coner tile, test suite for builder.ml:11:valid_moves top left corner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:12:valid_moves bottom right coner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:13:valid_moves top edge tile, test suite for builder.ml:12:valid_moves bottom right coner tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:14:valid_moves left edge tile, test suite for builder.ml:13:valid_moves top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:13:valid_moves top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:14:valid_moves left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:14:valid_moves left edge tile, test suite for builder.ml:13:valid_moves top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:13:valid_moves top edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:14:valid_moves left edge tile, test suite for builder.ml:13:valid_moves top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:13:valid_moves top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:14:valid_moves left edge tile, test suite for builder.ml:13:valid_moves top edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:14:valid_moves left edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:15:valid_moves center tile, test suite for builder.ml:14:valid_moves left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:14:valid_moves left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:15:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:15:valid_moves center tile, test suite for builder.ml:14:valid_moves left edge tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:16:valid_moves center tile, test suite for builder.ml:15:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:16:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:16:valid_moves center tile, test suite for builder.ml:15:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:15:valid_moves center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:16:valid_moves center tile, test suite for builder.ml:15:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:15:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:16:valid_moves center tile, test suite for builder.ml:15:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:17:find_chars board with all the same tiles, test suite for builder.ml:16:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:16:valid_moves center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:17:find_chars board with all the same tiles, test suite for builder.ml:16:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:16:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:17:find_chars board with all the same tiles.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:17:find_chars board with all the same tiles, test suite for builder.ml:16:valid_moves center tile.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:18:find_chars board with only one tile of given char, test suite for builder.ml:17:find_chars board with all the same tiles.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Start test test suite for builder.ml:18:find_chars board with only one tile of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:18:find_chars board with only one tile of given char, test suite for builder.ml:17:find_chars board with all the same tiles.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:17:find_chars board with all the same tiles is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:18:find_chars board with only one tile of given char, test suite for builder.ml:17:find_chars board with all the same tiles.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:17:find_chars board with all the same tiles.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:18:find_chars board with only one tile of given char, test suite for builder.ml:17:find_chars board with all the same tiles.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: Test test suite for builder.ml:18:find_chars board with only one tile of given char is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Still 2 tests running : test suite for builder.ml:19:find_chars board with only multiples tiles of given char, test suite for builder.ml:18:find_chars board with only one tile of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:19:find_chars board with only multiples tiles of given char, test suite for builder.ml:18:find_chars board with only one tile of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#01 I: End test test suite for builder.ml:18:find_chars board with only one tile of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Start test test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Still 2 tests running : test suite for builder.ml:19:find_chars board with only multiples tiles of given char, test suite for builder.ml:18:find_chars board with only one tile of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 2 tests running: test suite for builder.ml:19:find_chars board with only multiples tiles of given char, test suite for builder.ml:18:find_chars board with only one tile of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Still 1 tests running : test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 1 tests running: test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: Test test suite for builder.ml:19:find_chars board with only multiples tiles of given char is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Still 1 tests running : test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 1 tests running: test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#02 I: End test test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Still 1 tests running : test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 1 tests running: test suite for builder.ml:19:find_chars board with only multiples tiles of given char.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: 0 tests running: .
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Worker dhcp-vl2041-26343.eduroam.cornell.edu#02 has ended.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Worker dhcp-vl2041-26343.eduroam.cornell.edu#01 died unexpectedly.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Used 2 worker during test execution.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Run 10 tests with shard dhcp-vl2041-26343.eduroam.cornell.edu#01.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Run 10 tests with shard dhcp-vl2041-26343.eduroam.cornell.edu#02.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Check health of shard dhcp-vl2041-26343.eduroam.cornell.edu#01, 5 times.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Check health of shard dhcp-vl2041-26343.eduroam.cornell.edu#02, 1 times.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: ==============
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Summary:
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:19:find_chars board with only multiples tiles of given char is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:18:find_chars board with only one tile of given char is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:17:find_chars board with all the same tiles is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:16:valid_moves center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:15:valid_moves center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:14:valid_moves left edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:13:valid_moves top edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:12:valid_moves bottom right coner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:11:valid_moves top left corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:10:center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:9:bottom edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:8:left edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:7:corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:6:center tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:5:left edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:3:bottom right corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:4:top edge tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:1:bottom left corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:2:top right corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Test test suite for builder.ml:0:top left corner tile is successful.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Ran: 20 tests in: 0.11 seconds.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Cases: 20.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Tried: 20.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Errors: 0.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Failures: 0.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Skip: 0.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Todo: 0.
+2023-10-22T01:01:41+00:00 dhcp-vl2041-26343.eduroam.cornell.edu#00 I: Timeout: 0.
