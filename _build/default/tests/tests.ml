@@ -158,6 +158,10 @@ let board_tests =
         [ (3, 0); (1, 3); (2, 2); (3, 1) ]
         (Test_BuildBoard.find_chars 'b' b3) );
     (*is_valid_word tests*)
+    ( "is_valid_word 'A' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "A" test_board1) );
+    ( "is_valid_word 'AT' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "AT" test_board1) );
     ( "is_valid_word 'CAT' test_board1" >:: fun _ ->
       assert_equal true (Test_BuildBoard.is_valid_word "CAT" test_board1) );
     ( "is_valid_word 'CTS' test_board1" >:: fun _ ->
@@ -170,8 +174,12 @@ let board_tests =
       assert_equal false (Test_BuildBoard.is_valid_word "WORDT" test_board1) );
     ( "is_valid_word 'CACA' test_board1" >:: fun _ ->
       assert_equal false (Test_BuildBoard.is_valid_word "CACA" test_board1) );
+    ( "is_valid_word 'WINI' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "WINI" test_board1) );
     ( "is_valid_word 'FRAGS' test_board1" >:: fun _ ->
       assert_equal true (Test_BuildBoard.is_valid_word "FRAGS" test_board1) );
+    ( "is_valid_word 'CAFAC' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "CAFAC" test_board1) );
   ]
 
 let suite =

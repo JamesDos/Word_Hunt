@@ -1,4 +1,3 @@
-let () = Random.self_init ()
 (**
 module Dictionary = struct
   (*Reads the text file [dictionary] and makes it into a list*)
@@ -21,6 +20,8 @@ module Dictionary = struct
   let is_word word = List.mem word dictionary_list
 end
 *)
+let () = Random.self_init ()
+
 module BuildBoard = struct
   (*A character generator that generates letters based on how common they
     are found in the English language*)
@@ -150,20 +151,27 @@ module BuildBoard = struct
     next tile determined by valid_moves*)
   let is_valid_next_tile start next = List.mem next (valid_moves start)
 
-  (** Given two lists of locations [lst1] and [lst2], returns whether any two 
-  locations between lists are adjacent. is_connection 
-  [(0, 0)] [(0, 1); (3; 2)] is true. is_connection 
-  [(0,0); (3,3)] [(0, 2); (3, 1)] is false*)
+  (** Given two lists of locations [lst1] and [lst2], returns a tuple containing
+   whether any two locations between lists are adjacent and a list containing 
+   tuples the points in [lst2] that connect with points in [lst1]. 
+   is_connection [(0, 0); (2, 2)] [(0, 1); (3; 2)] is 
+   (true, [(0, 1); (2, 3)]. 
+   is_connection [(0,0); (3,3)] [(0, 2); (3, 1)] is (false, [])*)
   let rec is_connection loc_lst1 loc_lst2 =
     let rec compare_loc elm lst =
       match lst with
-      | [] -> false
-      | h :: t -> is_valid_next_tile elm h || compare_loc elm t
+      | [] -> (false, [])
+      | h :: t ->
+          if is_valid_next_tile elm h then (true, h :: snd (compare_loc elm t))
+          else (fst (compare_loc elm t), snd (compare_loc elm t))
     in
     let rec compare_lists lst1 lst2 =
       match lst1 with
-      | [] -> false
-      | h :: t -> compare_loc h lst2 || compare_lists t lst2
+      | [] -> (false, [])
+      | h :: t ->
+          let tup = compare_loc h lst2 in
+          if fst tup then (true, snd tup @ snd (compare_lists t lst2))
+          else (fst (compare_lists t lst2), snd (compare_lists t lst2))
     in
     compare_lists loc_lst1 loc_lst2
 
@@ -171,17 +179,17 @@ module BuildBoard = struct
     valid word in [board]. That is word is not out of bounds, is in the dictionary, 
     and each letter is of [word] is adjacent to each other*)
   let is_valid_word (word : string) (board : char array array) : bool =
-    let rec is_valid_word_aux str index =
-      if index < (String.length str) - 1 then
+    let rec is_valid_word_aux str index acc =
+      if index < String.length str - 1 then
         let curr_char = String.get str index in
         let curr_locations = find_chars curr_char board in
         let next_char = String.get str (index + 1) in
         let next_locations = find_chars next_char board in
-        is_connection curr_locations next_locations
-        && is_valid_word_aux str (index + 1)
+        let tup = is_connection curr_locations next_locations in
+        fst tup
+        && (not (List.mem (snd tup) acc))
+        && is_valid_word_aux str (index + 1) (curr_locations :: acc)
       else true
     in
-    String.length word > 2
-    (*&& List.mem word Dictionary.dictionary_list*)
-    && is_valid_word_aux word 0
+    String.length word > 2 && is_valid_word_aux word 0 []
 end
