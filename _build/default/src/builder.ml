@@ -1,5 +1,4 @@
 let () = Random.self_init ()
-
 (**
 module Dictionary = struct
   (*Reads the text file [dictionary] and makes it into a list*)
@@ -147,27 +146,42 @@ module BuildBoard = struct
     in
     find_chars_helper x board 0 0 []
 
-  (** Given a lists of locations [lst], returns whether one of the locations is 
-      valid according to valid_move*)
-  let rec all_valid_chars (lst : (int * int) list) : bool =
-    match lst with
-    | [] -> false
-    | (i, j) :: [] -> is_valid_pos (i, j)
-    | (i1, j1) :: (i2, j2) :: t ->
-        is_valid_pos (i1, j1)
-        && List.mem (i2, j2) (valid_moves (i1, j2))
-        && all_valid_chars ((i2, j2) :: t)
+  (** Given a starting location [start], returns whether [next] is a valid
+    next tile determined by valid_moves*)
+  let is_valid_next_tile start next = List.mem next (valid_moves start)
+
+  (** Given two lists of locations [lst1] and [lst2], returns whether any two 
+  locations between lists are adjacent. is_connection 
+  [(0, 0)] [(0, 1); (3; 2)] is true. is_connection 
+  [(0,0); (3,3)] [(0, 2); (3, 1)] is false*)
+  let rec is_connection loc_lst1 loc_lst2 =
+    let rec compare_loc elm lst =
+      match lst with
+      | [] -> false
+      | h :: t -> is_valid_next_tile elm h || compare_loc elm t
+    in
+    let rec compare_lists lst1 lst2 =
+      match lst1 with
+      | [] -> false
+      | h :: t -> compare_loc h lst2 || compare_lists t lst2
+    in
+    compare_lists loc_lst1 loc_lst2
 
   (** Given a word [word], is_valid_word determined whether [word] is a 
-    valid word in [board]. That is word is not out of bounds and each letter is
-    of [word] is adjacent to each other*)
+    valid word in [board]. That is word is not out of bounds, is in the dictionary, 
+    and each letter is of [word] is adjacent to each other*)
   let is_valid_word (word : string) (board : char array array) : bool =
     let rec is_valid_word_aux str index =
-      if index < String.length str then
-        let char_at_index = String.get str index in
-        let location = find_chars char_at_index board in
-        all_valid_chars location && is_valid_word_aux str (index + 1)
+      if index < (String.length str) - 1 then
+        let curr_char = String.get str index in
+        let curr_locations = find_chars curr_char board in
+        let next_char = String.get str (index + 1) in
+        let next_locations = find_chars next_char board in
+        is_connection curr_locations next_locations
+        && is_valid_word_aux str (index + 1)
       else true
     in
-    is_valid_word_aux word 0
+    String.length word > 2
+    (*&& List.mem word Dictionary.dictionary_list*)
+    && is_valid_word_aux word 0
 end

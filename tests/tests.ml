@@ -103,6 +103,26 @@ let b3 =
   start.(3).(1) <- 'b';
   start
 
+let test_board1 =
+  let start = Array.make_matrix 4 4 'x' in
+  start.(0).(0) <- 'C';
+  start.(0).(1) <- 'A';
+  start.(0).(2) <- 'T';
+  start.(0).(3) <- 'D';
+  start.(1).(0) <- 'W';
+  start.(1).(1) <- 'O';
+  start.(1).(2) <- 'F';
+  start.(1).(3) <- 'O';
+  start.(2).(0) <- 'I';
+  start.(2).(1) <- 'R';
+  start.(2).(2) <- 'D';
+  start.(2).(3) <- 'G';
+  start.(3).(0) <- 'N';
+  start.(3).(1) <- 'O';
+  start.(3).(2) <- 'A';
+  start.(3).(3) <- 'S';
+  start
+
 let () = Test_BuildBoard.print_board b2
 
 let board_tests =
@@ -137,6 +157,21 @@ let board_tests =
       assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_tuple)
         [ (3, 0); (1, 3); (2, 2); (3, 1) ]
         (Test_BuildBoard.find_chars 'b' b3) );
+    (*is_valid_word tests*)
+    ( "is_valid_word 'CAT' test_board1" >:: fun _ ->
+      assert_equal true (Test_BuildBoard.is_valid_word "CAT" test_board1) );
+    ( "is_valid_word 'CTS' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "CTS" test_board1) );
+    ( "is_valid_word 'CAG' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "CAG" test_board1) );
+    ( "is_valid_word 'WORDS' test_board1" >:: fun _ ->
+      assert_equal true (Test_BuildBoard.is_valid_word "WORDS" test_board1) );
+    ( "is_valid_word 'WORDT' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "WORDT" test_board1) );
+    ( "is_valid_word 'CACA' test_board1" >:: fun _ ->
+      assert_equal false (Test_BuildBoard.is_valid_word "CACA" test_board1) );
+    ( "is_valid_word 'FRAGS' test_board1" >:: fun _ ->
+      assert_equal true (Test_BuildBoard.is_valid_word "FRAGS" test_board1) );
   ]
 
 let suite =
