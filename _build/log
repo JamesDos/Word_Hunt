@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: "/Users/James/Desktop/cs 3110/3110_Final_Project"
 # Auto-detected concurrency: 8
-$ /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -config > /var/folders/gq/tdh2q1yd1n9f1n1tpwfk0fyw0000gp/T/dune_dfc269_output
+$ /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -config > /var/folders/gq/tdh2q1yd1n9f1n1tpwfk0fyw0000gp/T/dune_46aa34_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -114,9 +114,5 @@ $ /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -config > /var/folders/gq/tdh2
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -bin-annot -I src/.builder.objs/byte -no-alias-deps -opaque -o src/.builder.objs/byte/builder.cmo -c -impl src/builder.ml)
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -bin-annot -I tests/.tests.eobjs/byte -I /Users/James/.opam/cs3110-2023fa/lib/ocaml/unix -I /Users/James/.opam/cs3110-2023fa/lib/ounit2 -I /Users/James/.opam/cs3110-2023fa/lib/ounit2/advanced -I /Users/James/.opam/cs3110-2023fa/lib/seq -I /Users/James/.opam/cs3110-2023fa/lib/stdlib-shims -I src/.builder.objs/byte -no-alias-deps -opaque -o tests/.tests.eobjs/byte/dune__exe__Tests.cmi -c -intf tests/tests.mli)
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -I src/.builder.objs/byte -I src/.builder.objs/native -intf-suffix .ml -no-alias-deps -opaque -o src/.builder.objs/native/builder.cmx -c -impl src/builder.ml)
 $ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -I tests/.tests.eobjs/byte -I tests/.tests.eobjs/native -I /Users/James/.opam/cs3110-2023fa/lib/ocaml/unix -I /Users/James/.opam/cs3110-2023fa/lib/ounit2 -I /Users/James/.opam/cs3110-2023fa/lib/ounit2/advanced -I /Users/James/.opam/cs3110-2023fa/lib/seq -I /Users/James/.opam/cs3110-2023fa/lib/stdlib-shims -I src/.builder.objs/byte -I src/.builder.objs/native -intf-suffix .ml -no-alias-deps -opaque -o tests/.tests.eobjs/native/dune__exe__Tests.cmx -c -impl tests/tests.ml)
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -a -o src/builder.cmxa src/.builder.objs/native/builder.cmx)
 $ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -o tests/tests.exe src/builder.cmxa /Users/James/.opam/cs3110-2023fa/lib/ocaml/unix/unix.cmxa /Users/James/.opam/cs3110-2023fa/lib/stdlib-shims/stdlib_shims.cmxa /Users/James/.opam/cs3110-2023fa/lib/ounit2/advanced/oUnitAdvanced.cmxa /Users/James/.opam/cs3110-2023fa/lib/ounit2/oUnit.cmxa tests/.tests.eobjs/native/dune__exe__Tests.cmx)

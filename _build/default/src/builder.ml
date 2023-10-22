@@ -1,4 +1,3 @@
-(**
 module Dictionary = struct
   (*Reads the text file [dictionary] and makes it into a list*)
   let txt_to_list dictionary =
@@ -14,12 +13,12 @@ module Dictionary = struct
     loop []
 
   (** List of all the valid words in the dictionary*)
-  let dictionary_list = txt_to_list "data/scrabble_dict.txt"
+  let dictionary_list = txt_to_list "../data/scrabble_dict.txt"
 
   (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
 end
-*)
+
 let () = Random.self_init ()
 
 module BuildBoard = struct
@@ -157,7 +156,7 @@ module BuildBoard = struct
    is_connection [(0, 0); (2, 2)] [(0, 1); (3; 2)] is 
    (true, [(0, 1); (2, 3)]. 
    is_connection [(0,0); (3,3)] [(0, 2); (3, 1)] is (false, [])*)
-  let rec is_connection loc_lst1 loc_lst2 =
+  let rec has_connection loc_lst1 loc_lst2 =
     let rec compare_loc elm lst =
       match lst with
       | [] -> (false, [])
@@ -185,11 +184,32 @@ module BuildBoard = struct
         let curr_locations = find_chars curr_char board in
         let next_char = String.get str (index + 1) in
         let next_locations = find_chars next_char board in
-        let tup = is_connection curr_locations next_locations in
+        let tup = has_connection curr_locations next_locations in
         fst tup
         && (not (List.mem (snd tup) acc))
         && is_valid_word_aux str (index + 1) (curr_locations :: acc)
       else true
     in
     String.length word > 2 && is_valid_word_aux word 0 []
+
+  let char_at loc board = match loc with x, y -> board.(x).(y)
+
+  let rec make_word loc_list board =
+    match loc_list with
+    | [] -> ""
+    | h :: t -> char_at h board ^ make_word t board
+
+  let is_valid_word2 loc_list board =
+    let rec is_valid_word2_aux loc_list acc =
+      match loc_list with
+      | [] -> true
+      | [ x ] -> not (List.mem x acc)
+      | loc1 :: loc2 :: t ->
+          is_valid_next_tile loc1 loc2
+          && (not (List.mem loc1 acc))
+          && is_valid_word2_aux (loc2 :: t) (loc1 :: acc)
+    in
+    List.length loc_list > 2
+    && is_valid_word2_aux loc_list []
+    && List.mem (make_word loc_list board) Dictionary.dictionary_list
 end
