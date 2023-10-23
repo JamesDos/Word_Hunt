@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: "/Users/James/Desktop/cs 3110/3110_Final_Project"
 # Auto-detected concurrency: 8
-$ /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -config > /var/folders/gq/tdh2q1yd1n9f1n1tpwfk0fyw0000gp/T/dune_70ec28_output
+$ /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -config > /var/folders/gq/tdh2q1yd1n9f1n1tpwfk0fyw0000gp/T/dune_68b485_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -114,6 +114,3 @@ $ /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -config > /var/folders/gq/tdh2
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlc.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -bin-annot -I bin/.game.eobjs/byte -I src/.builder.objs/byte -no-alias-deps -opaque -o bin/.game.eobjs/byte/dune__exe__Game.cmi -c -intf bin/game.mli)
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -I bin/.game.eobjs/byte -I bin/.game.eobjs/native -I src/.builder.objs/byte -I src/.builder.objs/native -intf-suffix .ml -no-alias-deps -opaque -o bin/.game.eobjs/native/dune__exe__Game.cmx -c -impl bin/game.ml)
-$ (cd _build/default && /Users/James/.opam/cs3110-2023fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -o bin/game.exe src/builder.cmxa bin/.game.eobjs/native/dune__exe__Game.cmx)

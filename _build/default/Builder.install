@@ -4,9 +4,11 @@ lib: [
   "_build/install/default/lib/Builder/builder.cma"
   "_build/install/default/lib/Builder/builder.cmi"
   "_build/install/default/lib/Builder/builder.cmt"
+  "_build/install/default/lib/Builder/builder.cmti"
   "_build/install/default/lib/Builder/builder.cmx"
   "_build/install/default/lib/Builder/builder.cmxa"
   "_build/install/default/lib/Builder/builder.ml"
+  "_build/install/default/lib/Builder/builder.mli"
   "_build/install/default/lib/Builder/dune-package"
   "_build/install/default/lib/Builder/opam"
 ]
