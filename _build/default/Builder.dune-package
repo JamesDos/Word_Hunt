@@ -8,9 +8,11 @@
    builder.cma
    builder.cmi
    builder.cmt
+   builder.cmti
    builder.cmx
    builder.cmxa
    builder.ml
+   builder.mli
    dune-package
    opam))
  (libexec (builder.cmxs))
@@ -27,4 +29,4 @@
   (singleton
    (obj_name builder)
    (visibility public)
-   (source (path Builder) (impl (path builder.ml))))))
+   (source (path Builder) (intf (path builder.mli)) (impl (path builder.ml))))))

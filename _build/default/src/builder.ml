@@ -27,32 +27,32 @@ module BuildBoard = struct
   let random_char () =
     let cdf =
       [
-        (0.111607, 'E');
-        (0.196573, 'A');
-        (0.272382, 'R');
-        (0.347830, 'I');
-        (0.419465, 'O');
-        (0.488974, 'T');
-        (0.555518, 'N');
-        (0.612869, 'S');
-        (0.667762, 'L');
-        (0.713150, 'C');
-        (0.749458, 'U');
-        (0.783302, 'D');
-        (0.814973, 'P');
-        (0.845102, 'M');
-        (0.875136, 'H');
-        (0.899841, 'G');
-        (0.920561, 'B');
-        (0.938682, 'F');
-        (0.956461, 'Y');
-        (0.969360, 'W');
-        (0.980376, 'K');
-        (0.990450, 'V');
-        (0.993352, 'X');
-        (0.996074, 'Z');
-        (0.998039, 'J');
-        (1.000000, 'Q');
+        (0.111607, "E");
+        (0.196573, "A");
+        (0.272382, "R");
+        (0.347830, "I");
+        (0.419465, "O");
+        (0.488974, "T");
+        (0.555518, "N");
+        (0.612869, "S");
+        (0.667762, "L");
+        (0.713150, "C");
+        (0.749458, "U");
+        (0.783302, "D");
+        (0.814973, "P");
+        (0.845102, "M");
+        (0.875136, "H");
+        (0.899841, "G");
+        (0.920561, "B");
+        (0.938682, "F");
+        (0.956461, "Y");
+        (0.969360, "W");
+        (0.980376, "K");
+        (0.990450, "V");
+        (0.993352, "X");
+        (0.996074, "Z");
+        (0.998039, "J");
+        (1.000000, "Q");
       ]
     in
     let rand = Random.float 1.0 in
@@ -64,7 +64,7 @@ module BuildBoard = struct
     find_char cdf
 
   (*4x4 char array matrix*)
-  let board = Array.make_matrix 4 4 'a'
+  let board = Array.make_matrix 4 4 "a"
 
   (**fill_board fills the matrix [array_2d] with random characters using 
   random_char()*)
@@ -88,7 +88,7 @@ module BuildBoard = struct
 
     for i = 0 to rows - 1 do
       for j = 0 to cols - 1 do
-        Printf.printf "%c " array_2d.(i).(j)
+        Printf.printf "%s " array_2d.(i).(j)
       done;
       print_newline ()
     done
@@ -192,13 +192,22 @@ module BuildBoard = struct
     in
     String.length word > 2 && is_valid_word_aux word 0 []
 
+  (** Given a 2d array [board], returns the character at [loc]*)
   let char_at loc board = match loc with x, y -> board.(x).(y)
 
+  (** Given a list of locations [loc_list] and a 2d array [board],
+  returns the word that is made by taking each character in [loc_list] using
+  char_at and concatenating them with each other in the order they appear in*)
   let rec make_word loc_list board =
     match loc_list with
     | [] -> ""
     | h :: t -> char_at h board ^ make_word t board
 
+  (** Given a list of locations [loc_list] and a 2d array [board], returns
+  whether the word encoded by [loc_list] is a valid word according to the rules
+  of word hunt. That is, the word is a valid english word, doesn't use the 
+  letters from the same location multiple times and each letter is adjacent to 
+  to the letter before and after it.*)
   let is_valid_word2 loc_list board =
     let rec is_valid_word2_aux loc_list acc =
       match loc_list with
