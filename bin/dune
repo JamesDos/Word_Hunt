@@ -1,9 +1,4 @@
 (executable
- (name gui)
- (libraries bogue)
- (modules gui))
-
-(executable
  (name game)
  (modules game)
- (libraries Builder Str))
+ (libraries Builder str))
