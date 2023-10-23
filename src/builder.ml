@@ -13,7 +13,7 @@ module Dictionary = struct
     loop []
 
   (** List of all the valid words in the dictionary*)
-  let dictionary_list = txt_to_list "../data/scrabble_dict.txt"
+  let dictionary_list = txt_to_list "data/scrabble_dict.txt"
 
   (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
@@ -192,13 +192,22 @@ module BuildBoard = struct
     in
     String.length word > 2 && is_valid_word_aux word 0 []
 
+  (** Given a 2d array [board], returns the character at [loc]*)
   let char_at loc board = match loc with x, y -> board.(x).(y)
 
+  (** Given a list of locations [loc_list] and a 2d array [board],
+  returns the word that is made by taking each character in [loc_list] using
+  char_at and concatenating them with each other in the order they appear in*)
   let rec make_word loc_list board =
     match loc_list with
     | [] -> ""
     | h :: t -> char_at h board ^ make_word t board
 
+  (** Given a list of locations [loc_list] and a 2d array [board], returns
+  whether the word encoded by [loc_list] is a valid word according to the rules
+  of word hunt. That is, the word is a valid english word, doesn't use the 
+  letters from the same location multiple times and each letter is adjacent to 
+  to the letter before and after it.*)
   let is_valid_word2 loc_list board =
     let rec is_valid_word2_aux loc_list acc =
       match loc_list with

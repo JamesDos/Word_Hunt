@@ -13,7 +13,7 @@ module Dictionary = struct
     loop []
 
   (** List of all the valid words in the dictionary*)
-  let dictionary_list = txt_to_list "../data/scrabble_dict.txt"
+  let dictionary_list = txt_to_list "data/scrabble_dict.txt"
 
   (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
