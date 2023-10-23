@@ -1,44 +1,71 @@
 open Builder
-
-(* REPL from A2*)
-(* read-eval-print loop *)
-let rec repl (eval : string -> string) : unit =
-  print_string "> ";
-  let input = read_line () in
-  match input with
-  | "" -> print_endline "bye"
-  | _ ->
-      input |> eval |> print_endline;
-      repl eval
-
+open Str
 module GameDict = Builder.Dictionary
 module GameBoard = Builder.BuildBoard
 
 let board = GameBoard.game_board
 
+let pp_tuple s =
+  match s with x, y -> "\"" ^ string_of_int x ^ " " ^ string_of_int y ^ "\""
+
+(** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
+    pretty-print each element of [lst]. *)
+let pp_list pp_elt lst =
+  let pp_elts lst =
+    let rec loop n acc = function
+      | [] -> acc
+      | [ h ] -> acc ^ pp_elt h
+      | h1 :: (h2 :: t as t') ->
+          if n = 100 then acc ^ "..." (* stop printing long list *)
+          else loop (n + 1) (acc ^ pp_elt h1 ^ "; ") t'
+    in
+    loop 0 "" lst
+  in
+  "[" ^ pp_elts lst ^ "]"
+
+let eval_word word =
+  let string_to_tuple_list str =
+    let tuple_pattern = "\\(([^,]+),([^)]+)\\)" in
+    let tuples_str = Str.split (Str.regexp ",") str in
+
+    let parse_tuple tuple_str =
+      if Str.string_match (Str.regexp tuple_pattern) tuple_str 0 then
+        let x = int_of_string (Str.matched_group 1 tuple_str) in
+        let y = int_of_string (Str.matched_group 2 tuple_str) in
+        Some (x, y)
+      else None
+    in
+
+    let tuples = List.filter_map parse_tuple tuples_str in
+    tuples
+  in
+  List.length (string_to_tuple_list word) = 0
+  || GameBoard.is_valid_word2 (string_to_tuple_list word) board
+
+(* REPL from A2*)
+(* read-eval-print loop *)
+let rec repl (eval : string -> bool) : unit =
+  print_string "> ";
+  let input = read_line () in
+  match input with
+  | "" -> print_endline "Ending Game"
+  | _ ->
+      let result = input |> eval in
+      let result_str = if result then "true" else "false" in
+      print_endline result_str;
+      repl eval
+
 (*********** command line interface ***********)
 let () =
   print_endline "\n\nWelcome to Word Hunt!\n";
-  print_endline "Please enter to start the game";
   print_string "> ";
   print_endline "Starting game...";
-  (*BuildBoard.print_board board;*)
+  BuildBoard.print_board board;
   print_string "> ";
   print_endline
-    "Please enter a location list to represent a word. For example \n\
-     [(0, 0);(0, 1);(0,2)] would represent the top left three letters \n\
+    "Please enter the location of letters seperated by commas torepresent a \
+     word. \n\
+     For example,(0,0),(0,1),(0,2) would represent the top left three letters \n\
      with (0, 0) being the letter at the top left corner, (0, 1) being the \n\
      letter directly right to it etc.";
-  print_string "> ";
-  let input = input_line stdin in
-  let string_to_tuple_list str =
-    let buf = Scanf.Scanning.from_string str in
-    let rec aux acc =
-      match Scanf.bscanf buf " (%d, %d)%!" (fun x y -> (x, y)) with
-      | exception End_of_file -> List.rev acc
-      | pair -> aux (pair :: acc)
-    in
-    aux []
-  in
-  let tuples = string_to_tuple_list input in
-  print_endline (string_of_bool (GameBoard.is_valid_word2 tuples board))
+  repl eval_word

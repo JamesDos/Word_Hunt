@@ -6,4 +6,4 @@
 (executable
  (name game)
  (modules game)
- (libraries Builder))
+ (libraries Builder Str))
