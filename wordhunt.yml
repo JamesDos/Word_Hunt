@@ -25,4 +25,4 @@ desc: >
   word hunt, the game displays a 4 x 4 grid of characters from which the user 
   is prompted to form words from the board. Word are created by selecting
   adjacent letters in the board. Our version of word hunt accepts words using
-   the same rules as the game pigeon word hunt.
+  the same rules as the game pigeon word hunt.

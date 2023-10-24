@@ -1,0 +1,2 @@
+1. Open terminal and run "make game"
+2. Follow the instructions presented by the terminal and have fun playing
