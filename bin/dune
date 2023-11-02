@@ -2,3 +2,8 @@
  (name game)
  (modules game)
  (libraries Builder str))
+
+(executable
+ (name GUI)
+ (modules GUI)
+ (libraries Builder str bogue))

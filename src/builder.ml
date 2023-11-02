@@ -222,3 +222,18 @@ module BuildBoard = struct
     && is_valid_word2_aux loc_list []
     && List.mem (make_word loc_list board) Dictionary.dictionary_list
 end
+
+module type GraphSig = sig
+  type 'a t
+  type node
+
+  val empty : 'a t
+  val add_node : 'a t -> node -> 'a t
+  val add_edge : 'a t -> node -> node -> 'a t
+  val neighbors : 'a t -> node -> node list
+end
+
+module Board = struct
+  type node = int * int
+  type 'a t = (node * 'a list) list
+end

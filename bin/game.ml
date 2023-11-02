@@ -32,12 +32,13 @@ let () =
   BuildBoard.print_board board;
   print_string "> ";
   print_endline
-    "Please enter the location of letters seperated by commas torepresent a \
+    "Please enter the location of letters seperated by commas to represent a \
      word. \n\
      For example,(0,0);(0,1);(0,2) would represent the top left three letters \n\
      with (0,0) being the letter at the top left corner, (0,1) being the \n\
      letter directly right to it etc. Requires that the format of the input is\n\
      is exactly like the example. That is, there can't be any spaces between or\n\
-     within the tuples and no non-tuple strings. So (0, 0) and 'hello' would\n\
-     be invalid inputs.";
+     within the tuples and no non-tuple strings. So (0, 0), (0,1) ; (0,2), and \
+     'hello' would\n\
+     be invalid inputs and crash the game.";
   repl eval_input
