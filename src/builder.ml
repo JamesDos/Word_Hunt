@@ -1,3 +1,43 @@
+module Trie = struct
+  type trie_node = {
+    value : char option;
+    mutable is_end_of_word : bool;
+    children : (char, trie_node) Hashtbl.t;
+  }
+
+  let create_node () =
+    { value = None; is_end_of_word = false; children = Hashtbl.create 10 }
+
+  let rec insert_word node word =
+    match word with
+    | [] -> node.is_end_of_word <- true
+    | hd :: tl ->
+        let next_node =
+          try Hashtbl.find node.children hd
+          with Not_found ->
+            let new_node = create_node () in
+            Hashtbl.add node.children hd new_node;
+            new_node
+        in
+        insert_word next_node tl
+
+  let rec search_word node word =
+    match word with
+    | [] -> node.is_end_of_word
+    | hd :: tl -> (
+        try
+          let next_node = Hashtbl.find node.children hd in
+          search_word next_node tl
+        with Not_found -> false)
+
+  let insert_list_of_words node words =
+    List.iter
+      (fun word -> insert_word node (List.of_seq (String.to_seq word)))
+      words
+
+  let to_char_list word = List.of_seq (String.to_seq word)
+end
+
 module Dictionary = struct
   (*Reads the text file [dictionary] and makes it into a list*)
   let txt_to_list dictionary =
@@ -17,6 +57,11 @@ module Dictionary = struct
 
   (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
+
+  let trie =
+    let root = Trie.create_node () in
+    Trie.insert_list_of_words root dictionary_list;
+    root
 end
 
 let () = Random.self_init ()
@@ -221,19 +266,52 @@ module BuildBoard = struct
     List.length loc_list > 2
     && is_valid_word2_aux loc_list []
     && List.mem (make_word loc_list board) Dictionary.dictionary_list
-end
 
-module type GraphSig = sig
-  type 'a t
-  type node
+  let board_copy = Array.copy game_board
 
-  val empty : 'a t
-  val add_node : 'a t -> node -> 'a t
-  val add_edge : 'a t -> node -> node -> 'a t
-  val neighbors : 'a t -> node -> node list
-end
+  let rec traverse (grid : string array array) (i : int) (j : int)
+      (word : string) (order : (int * int) list)
+      (solutions : (string, (int * int) list) Hashtbl.t) : unit =
+    (* creates a copied grid *)
+    let grid' = Array.map (fun a -> Array.copy a) grid in
+    let char = grid'.(i).(j) in
+    let word = word ^ char in
+    let new_order = order @ [ (i, j) ] in
+    (*If word is not in trie, then prunes by ending traversal*)
+    if not (Trie.search_word Dictionary.trie (Trie.to_char_list word)) then ()
+    else Hashtbl.add solutions word new_order;
 
-module Board = struct
-  type node = int * int
-  type 'a t = (node * 'a list) list
+    (* Mark the current cell as visited by setting to an empty string *)
+    grid'.(i).(j) <- "";
+    let neighbors = valid_moves (i, j) in
+    List.iter
+      (fun (next_i, next_j) ->
+        if
+          next_i >= 0
+          && next_i < Array.length grid
+          && next_j >= 0
+          && next_j < Array.length grid.(0)
+        then
+          match grid'.(next_i).(next_j) with
+          | cell when cell <> "" ->
+              traverse grid' next_i next_j word new_order solutions
+          | _ -> ())
+      neighbors;
+    ()
+
+  let solve grid solutions =
+    for i = 0 to Array.length grid - 1 do
+      for j = 0 to Array.length grid.(0) - 1 do
+        traverse grid i j "" [] solutions
+      done
+    done
+
+  let solutions hashtable =
+    let getKeys (tbl : (string, (int * int) list) Hashtbl.t) : 'a list =
+      let key_list = ref [] in
+      Hashtbl.iter (fun key _ -> key_list := key :: !key_list) tbl;
+      !key_list
+    in
+    let all_words = getKeys hashtable in
+    List.filter (fun x -> String.length x > 2) all_words
 end

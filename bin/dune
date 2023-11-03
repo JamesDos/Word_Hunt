@@ -1,9 +1,9 @@
 (executable
  (name game)
  (modules game)
- (libraries Builder str))
+ (libraries Builder str Graph))
 
 (executable
  (name GUI)
  (modules GUI)
- (libraries Builder str bogue))
+ (libraries Builder str bogue Graph))

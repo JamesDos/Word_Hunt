@@ -1,3 +1,9 @@
 (library
  (name builder)
+ (modules builder)
  (public_name Builder))
+
+(library
+ (name graph)
+ (modules graph)
+ (public_name Graph))

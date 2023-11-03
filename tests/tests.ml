@@ -36,13 +36,6 @@ let pp_list pp_elt lst =
 module Test_BuildBoard = Builder.BuildBoard
 module TestDict = Builder.Dictionary
 
-let () = print_endline (pp_list pp_string TestDict.dictionary_list)
-
-let () =
-  print_endline (string_of_bool (List.mem "ZZZ" TestDict.dictionary_list))
-
-let () = print_endline (string_of_int (List.length TestDict.dictionary_list))
-
 let valid_points_tests =
   [
     (*Tests for is_corner*)
@@ -131,17 +124,22 @@ let test_board1 =
   start.(3).(3) <- "S";
   start
 
+let mini_board =
+  let start = Array.make_matrix 4 4 "x" in
+  start.(0).(0) <- "C";
+  start.(0).(1) <- "A";
+  start.(1).(0) <- "T";
+  start.(1).(1) <- "E";
+  start
+
+let empty_hashtable = Hashtbl.create 10
+let () = Test_BuildBoard.solve test_board1 empty_hashtable
+
+(*let () = Test_BuildBoard.traverse mini_board 0 0 "" [] empty_hashtable*)
+let () = Test_BuildBoard.print_board test_board1
+
 let () =
-  print_endline
-    (Test_BuildBoard.make_word [ (0, 0); (0, 1); (0, 2) ] test_board1);
-  print_endline
-    (Test_BuildBoard.make_word
-       [ (1, 0); (1, 1); (2, 1); (2, 2); (3, 3) ]
-       test_board1);
-  print_endline
-    (Test_BuildBoard.make_word
-       [ (1, 2); (2, 1); (3, 2); (2, 3); (3, 3) ]
-       test_board1)
+  print_endline (pp_list pp_string (Test_BuildBoard.solutions empty_hashtable))
 
 let board_tests =
   [
