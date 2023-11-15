@@ -1,6 +1,7 @@
 open Builder
+open Data_structures
 open Str
-module GameDict = Builder.Dictionary
+module GameDict = Data_structures.Dictionary
 module GameBoard = Builder.BuildBoard
 
 let board = GameBoard.game_board

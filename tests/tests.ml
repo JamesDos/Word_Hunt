@@ -1,5 +1,6 @@
 open OUnit2
 open Builder
+open Data_structures
 
 (** Printing functions taken from A2*)
 
@@ -34,7 +35,7 @@ let pp_list pp_elt lst =
   "[" ^ pp_elts lst ^ "]"
 
 module Test_BuildBoard = Builder.BuildBoard
-module TestDict = Builder.Dictionary
+module TestDict = Data_structures.Dictionary
 
 let valid_points_tests =
   [

@@ -1,9 +1,10 @@
 (library
  (name builder)
  (modules builder)
- (public_name Builder))
+ (public_name Builder)
+ (libraries Data_Structures))
 
 (library
- (name graph)
- (modules graph)
- (public_name Graph))
+ (name data_structures)
+ (modules data_structures)
+ (public_name Data_Structures))

@@ -1,3 +1,6 @@
+open Data_structures
+
+(*
 module Trie = struct
   type trie_node = {
     value : char option;
@@ -62,7 +65,7 @@ module Dictionary = struct
     let root = Trie.create_node () in
     Trie.insert_list_of_words root dictionary_list;
     root
-end
+end *)
 
 let () = Random.self_init ()
 
@@ -265,9 +268,15 @@ module BuildBoard = struct
     in
     List.length loc_list > 2
     && is_valid_word2_aux loc_list []
-    && List.mem (make_word loc_list board) Dictionary.dictionary_list
+    && Trie.search_word Dictionary.trie
+         (Trie.to_char_list (make_word loc_list board))
 
-  let board_copy = Array.copy game_board
+  (** Helper function called by solve. Given a 2d array of strings [grid], an [i] and [j] position on the grid
+  and accumulator string [word], a tuple list list [order] and a hashtable maping
+  strings to their order, traverse finds all possible words that can be made 
+  from the grid starting at (i, j), maps these words to the order they were made in
+  and inserts these bindings to the [solutions] hashtable. 
+    *)
 
   let rec traverse (grid : string array array) (i : int) (j : int)
       (word : string) (order : (int * int) list)
@@ -292,6 +301,7 @@ module BuildBoard = struct
           && next_j >= 0
           && next_j < Array.length grid.(0)
         then
+          (*Backtracking*)
           match grid'.(next_i).(next_j) with
           | cell when cell <> "" ->
               traverse grid' next_i next_j word new_order solutions
@@ -299,6 +309,10 @@ module BuildBoard = struct
       neighbors;
     ()
 
+  (** Given a 2d array [grid] and a hasbtable maping string to (int * int) list
+    [solutions], solve inserts all possible words that can be generated from grid
+    according to the rules of wordhunt (including words of length < 2) mapped to the
+    order (an (int * int) list) they were created in.*)
   let solve grid solutions =
     for i = 0 to Array.length grid - 1 do
       for j = 0 to Array.length grid.(0) - 1 do
@@ -306,6 +320,10 @@ module BuildBoard = struct
       done
     done
 
+  (** Given a [hashtable] of solutions, solutions returns a list of all keys 
+in hashtable (eg. a list of strings containing all the solutions in the grid).
+  Requires: solve to be called on [hashtable] before calling solutions on hashtable
+      *)
   let solutions hashtable =
     let getKeys (tbl : (string, (int * int) list) Hashtbl.t) : 'a list =
       let key_list = ref [] in

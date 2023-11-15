@@ -1,3 +1,3 @@
 (executable
  (name tests)
- (libraries Builder ounit2))
+ (libraries Builder Data_Structures ounit2))

@@ -1,30 +1,3 @@
-module type GraphSig = sig
-  type node
-  type t
-
-  val make_graph : node -> node list -> t
-  val add_node : t -> node -> node list -> t
-  val neighbors : t -> node -> node list
-end
-
-module Board : GraphSig = struct
-  type node = int * int
-  type t = (node * node list) list
-
-  let make_graph (node : node) (neighbors : node list) = [ (node, neighbors) ]
-
-  let add_node (graph : t) (node : node) (neighbors : node list) =
-    (node, neighbors) :: graph
-
-  let rec neighbors (graph : t) (node : node) : node list =
-    match graph with
-    | [] -> []
-    | h :: t -> if fst h = node then snd h else neighbors t node
-
-  let to_list (graph : t) = graph
-  let rec traverse graph pos = []
-end
-
 module Trie = struct
   type trie_node = {
     value : char option;
@@ -61,4 +34,32 @@ module Trie = struct
     List.iter
       (fun word -> insert_word node (List.of_seq (String.to_seq word)))
       words
+
+  let to_char_list word = List.of_seq (String.to_seq word)
+end
+
+module Dictionary = struct
+  (*Reads the text file [dictionary] and makes it into a list*)
+  let txt_to_list dictionary =
+    let ic = open_in dictionary in
+    let rec loop acc =
+      try
+        let line = input_line ic in
+        loop (line :: acc)
+      with End_of_file ->
+        close_in ic;
+        acc
+    in
+    loop []
+
+  (** List of all the valid words in the dictionary*)
+  let dictionary_list = txt_to_list "data/scrabble_dict.txt"
+
+  (** is_word returns whether [word] is a valid word in the english dictionary*)
+  let is_word word = List.mem word dictionary_list
+
+  let trie =
+    let root = Trie.create_node () in
+    Trie.insert_list_of_words root dictionary_list;
+    root
 end
