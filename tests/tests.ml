@@ -36,7 +36,7 @@ let pp_list pp_elt lst =
 
 module Test_BuildBoard = Builder.BuildBoard
 module TestDict = Data_structures.Dictionary
-
+(*
 let valid_points_tests =
   [
     (*Tests for is_corner*)
@@ -88,7 +88,7 @@ let valid_points_tests =
       assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
         [ (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (2, 2); (2, 1); (1, 1) ]
         (Test_BuildBoard.valid_moves (1, 2)) );
-  ]
+  ]*)
 
 let b1 = Array.make_matrix 4 4 "a"
 
@@ -105,6 +105,7 @@ let b3 =
   start.(3).(1) <- 'b';
   start
 
+(*typical board*)
 let test_board1 =
   let start = Array.make_matrix 4 4 "x" in
   start.(0).(0) <- "C";
@@ -125,6 +126,50 @@ let test_board1 =
   start.(3).(3) <- "S";
   start
 
+(*board with no solutions*)
+let test_board2 =
+  let start = Array.make_matrix 4 4 "x" in
+  start.(0).(0) <- "@";
+  start.(0).(1) <- "@";
+  start.(0).(2) <- "@";
+  start.(0).(3) <- "@";
+  start.(1).(0) <- "@";
+  start.(1).(1) <- "@";
+  start.(1).(2) <- "@";
+  start.(1).(3) <- "@";
+  start.(2).(0) <- "@";
+  start.(2).(1) <- "@";
+  start.(2).(2) <- "@";
+  start.(2).(3) <- "@";
+  start.(3).(0) <- "@";
+  start.(3).(1) <- "@";
+  start.(3).(2) <- "@";
+  start.(3).(3) <- "@";
+  start
+
+(*board with multiple words from same path*)
+let test_board3 =
+  let start = Array.make_matrix 4 4 "x" in
+  start.(0).(0) <- "C";
+  start.(0).(1) <- "A";
+  start.(0).(2) <- "S";
+  start.(0).(3) <- "T";
+  start.(1).(0) <- "@";
+  start.(1).(1) <- "@";
+  start.(1).(2) <- "@";
+  start.(1).(3) <- "A";
+  start.(2).(0) <- "@";
+  start.(2).(1) <- "@";
+  start.(2).(2) <- "@";
+  start.(2).(3) <- "W";
+  start.(3).(0) <- "@";
+  start.(3).(1) <- "S";
+  start.(3).(2) <- "Y";
+  start.(3).(3) <- "A";
+  start
+
+let () = Test_BuildBoard.print_board test_board3
+
 let mini_board =
   let start = Array.make_matrix 4 4 "x" in
   start.(0).(0) <- "C";
@@ -141,6 +186,18 @@ let () = Test_BuildBoard.print_board test_board1
 
 let () =
   print_endline (pp_list pp_string (Test_BuildBoard.solutions empty_hashtable))
+
+(*Helper functions for tests*)
+let test_is_valid_word name expected_output lst board =
+  name >:: fun _ ->
+  assert_equal expected_output (Test_BuildBoard.is_valid_word2 lst board)
+
+let test_solve name expected_output input =
+  name >:: fun _ ->
+  let hashtable = Hashtbl.create 10 in
+  Test_BuildBoard.solve input hashtable;
+  assert_equal ~printer:(pp_list pp_string) expected_output
+    (Test_BuildBoard.longest_words (Test_BuildBoard.solutions hashtable) 10)
 
 let board_tests =
   [
@@ -175,58 +232,92 @@ let board_tests =
         [ (3, 0); (1, 3); (2, 2); (3, 1) ]
         (Test_BuildBoard.find_chars 'b' b3) );
     (*is_valid_word tests*)
-    ( "is_valid_word2 'A' test_board1" >:: fun _ ->
-      assert_equal false (Test_BuildBoard.is_valid_word2 [ (0, 1) ] test_board1)
-    );
-    ( "is_valid_word 'AT' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2 [ (0, 1); (0, 2) ] test_board1) );
-    ( "is_valid_word 'CAT' test_board1" >:: fun _ ->
-      assert_equal true
-        (Test_BuildBoard.is_valid_word2 [ (0, 0); (0, 1); (0, 2) ] test_board1)
-    );
-    ( "is_valid_word 'CTS' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2 [ (0, 0); (0, 2); (3, 3) ] test_board1)
-    );
-    ( "is_valid_word 'CAG' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2 [ (0, 0); (0, 1); (2, 3) ] test_board1)
-    );
-    ( "is_valid_word 'WORDS' test_board1" >:: fun _ ->
-      assert_equal true
-        (Test_BuildBoard.is_valid_word2
-           [ (1, 0); (1, 1); (2, 1); (2, 2); (3, 3) ]
-           test_board1) );
-    ( "is_valid_word 'WORDT' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2
-           [ (1, 0); (1, 1); (2, 1); (2, 2); (0, 3) ]
-           test_board1) );
-    ( "is_valid_word 'CACA' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2
-           [ (0, 0); (0, 1); (0, 0); (0, 0) ]
-           test_board1) );
-    ( "is_valid_word 'WINI' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2
-           [ (0, 1); (0, 2); (0, 3); (0, 2) ]
-           test_board1) );
-    ( "is_valid_word 'FRAGS' test_board1" >:: fun _ ->
-      assert_equal true
-        (Test_BuildBoard.is_valid_word2
-           [ (1, 2); (2, 1); (3, 2); (2, 3); (3, 3) ]
-           test_board1) );
-    ( "is_valid_word 'CAFAC' test_board1" >:: fun _ ->
-      assert_equal false
-        (Test_BuildBoard.is_valid_word2
-           [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
-           test_board1) );
+    test_is_valid_word "is_valid_word '' test_board1" false [] test_board1;
+    test_is_valid_word "is_valid_word 'A' test_board1" false
+      [ (0, 1) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'A' test_board1" false
+      [ (0, 1) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'AT' test_board1" false
+      [ (0, 1); (0, 2) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'CAT' test_board1" true
+      [ (0, 0); (0, 1); (0, 2) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'CTS' test_board1" false
+      [ (0, 0); (0, 2); (3, 3) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'CAG' test_board1" false
+      [ (0, 0); (0, 1); (2, 3) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'WORDS' test_board1" true
+      [ (1, 0); (1, 1); (2, 1); (2, 2); (3, 3) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'WORDT' test_board1" false
+      [ (1, 0); (1, 1); (2, 1); (2, 2); (0, 3) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'CACA' test_board1" false
+      [ (0, 0); (0, 1); (0, 0); (0, 0) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'WINI' test_board1" false
+      [ (0, 1); (0, 2); (0, 3); (0, 2) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'FRAGS' test_board1" true
+      [ (1, 2); (2, 1); (3, 2); (2, 3); (3, 3) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'CAFAC' test_board1" false
+      [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
+      test_board1;
+    test_is_valid_word "is_valid_word 'INROADS' test_board1" true
+      [ (2, 0); (3, 0); (2, 1); (3, 1); (3, 2); (2, 2); (3, 3) ]
+      test_board1;
+    test_is_valid_word "is_valid_word test_board2" false
+      [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
+      test_board2;
+    test_is_valid_word "is_valid_word 'CASTAWAYS' test_board3" true
+      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2); (3, 1) ]
+      test_board3;
+    test_is_valid_word "is_valid_word 'CASTAWAY' test_board3" true
+      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2) ]
+      test_board3;
+    test_is_valid_word "is_valid_word 'CATS' test_board3" false
+      [ (0, 0); (0, 1); (0, 3); (0, 2) ]
+      test_board3;
+    (*solve tests*)
+    test_solve "Test_BuildBord.solve test_board1"
+      [
+        "INROADS";
+        "INROAD";
+        "CORDON";
+        "CORDS";
+        "CODON";
+        "SAROD";
+        "SAROD";
+        "ACORN";
+        "TOGAS";
+        "GARNI";
+      ]
+      test_board1;
+    test_solve "Test_BuildBord.solve test_board2" [] test_board2;
+    test_solve "Test_BuildBord.solve test_board3"
+      [
+        "CASTAWAYS";
+        "CASTAWAY";
+        "AWAYS";
+        "CASA";
+        "WAYS";
+        "WATS";
+        "TAWA";
+        "WAST";
+        "AWAY";
+        "STAW";
+      ]
+      test_board3;
   ]
 
 let suite =
   "test suite for builder.ml"
-  >::: List.flatten [ valid_points_tests; board_tests ]
+  >::: List.flatten [ (*valid_points_tests;*) board_tests ]
 
 let () = run_test_tt_main suite

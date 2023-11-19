@@ -1,72 +1,5 @@
 open Data_structures
 
-(*
-module Trie = struct
-  type trie_node = {
-    value : char option;
-    mutable is_end_of_word : bool;
-    children : (char, trie_node) Hashtbl.t;
-  }
-
-  let create_node () =
-    { value = None; is_end_of_word = false; children = Hashtbl.create 10 }
-
-  let rec insert_word node word =
-    match word with
-    | [] -> node.is_end_of_word <- true
-    | hd :: tl ->
-        let next_node =
-          try Hashtbl.find node.children hd
-          with Not_found ->
-            let new_node = create_node () in
-            Hashtbl.add node.children hd new_node;
-            new_node
-        in
-        insert_word next_node tl
-
-  let rec search_word node word =
-    match word with
-    | [] -> node.is_end_of_word
-    | hd :: tl -> (
-        try
-          let next_node = Hashtbl.find node.children hd in
-          search_word next_node tl
-        with Not_found -> false)
-
-  let insert_list_of_words node words =
-    List.iter
-      (fun word -> insert_word node (List.of_seq (String.to_seq word)))
-      words
-
-  let to_char_list word = List.of_seq (String.to_seq word)
-end
-
-module Dictionary = struct
-  (*Reads the text file [dictionary] and makes it into a list*)
-  let txt_to_list dictionary =
-    let ic = open_in dictionary in
-    let rec loop acc =
-      try
-        let line = input_line ic in
-        loop (line :: acc)
-      with End_of_file ->
-        close_in ic;
-        acc
-    in
-    loop []
-
-  (** List of all the valid words in the dictionary*)
-  let dictionary_list = txt_to_list "data/scrabble_dict.txt"
-
-  (** is_word returns whether [word] is a valid word in the english dictionary*)
-  let is_word word = List.mem word dictionary_list
-
-  let trie =
-    let root = Trie.create_node () in
-    Trie.insert_list_of_words root dictionary_list;
-    root
-end *)
-
 let () = Random.self_init ()
 
 module BuildBoard = struct
@@ -222,7 +155,7 @@ module BuildBoard = struct
     in
     compare_lists loc_lst1 loc_lst2
 
-  (** Given a word [word], is_valid_word determined whether [word] is a 
+  (** Given a word [word], is_valid_word determines whether [word] is a 
     valid word in [board]. That is word is not out of bounds, is in the dictionary, 
     and each letter is of [word] is adjacent to each other*)
   let is_valid_word (word : string) (board : char array array) : bool =
@@ -310,7 +243,7 @@ module BuildBoard = struct
     ()
 
   (** Given a 2d array [grid] and a hasbtable maping string to (int * int) list
-    [solutions], solve inserts all possible words that can be generated from grid
+    [solutions], solve inserts into [solutions] all possible words that can be generated from [grid]
     according to the rules of wordhunt (including words of length < 2) mapped to the
     order (an (int * int) list) they were created in.*)
   let solve grid solutions =
@@ -321,7 +254,7 @@ module BuildBoard = struct
     done
 
   (** Given a [hashtable] of solutions, solutions returns a list of all keys 
-in hashtable (eg. a list of strings containing all the solutions in the grid).
+in hashtable. This is a list of strings containing all the solutions in the grid, ordered from longest to shortest length.
   Requires: solve to be called on [hashtable] before calling solutions on hashtable
       *)
   let solutions hashtable =
@@ -332,4 +265,24 @@ in hashtable (eg. a list of strings containing all the solutions in the grid).
     in
     let all_words = getKeys hashtable in
     List.filter (fun x -> String.length x > 2) all_words
+
+  (**longest_words [word_list] [n] is a list containg the n longest words in [word_list].
+      This list is sorted decreasingly from longest length words. If n is greater
+      than the length of [word_list], then the returned list is the same length 
+      as [word_list]*)
+  let longest_words word_lst n =
+    let sorted =
+      List.sort
+        (fun x y ->
+          if String.length x < String.length y then 1
+          else if String.length x > String.length y then -1
+          else 0)
+        word_lst
+    in
+    let rec take_n word_lst n acc =
+      match word_lst with
+      | [] -> List.rev acc
+      | h :: t -> if n = 0 then List.rev acc else take_n t (n - 1) (h :: acc)
+    in
+    take_n sorted n []
 end
