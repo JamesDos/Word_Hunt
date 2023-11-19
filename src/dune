@@ -2,7 +2,9 @@
  (name builder)
  (modules builder)
  (public_name Builder)
- (libraries Data_Structures))
+ (libraries Data_Structures)
+ (instrumentation
+  (backend bisect_ppx)))
 
 (library
  (name data_structures)

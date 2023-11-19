@@ -19,6 +19,13 @@ test:
 game:
 	OCAMLRUNPARAM=b dune exec bin/game.exe
 
+bisect: bisect-clean
+	-dune exec --instrument-with bisect_ppx --force tests/tests.exe
+	bisect-ppx-report html
+
+bisect-clean:
+	rm -rf _coverage bisect*.coverage
+
 check:
 	@bash check.sh
 
