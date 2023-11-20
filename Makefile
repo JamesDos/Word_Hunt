@@ -19,6 +19,9 @@ test:
 game:
 	OCAMLRUNPARAM=b dune exec bin/game.exe
 
+GUI:
+	OCAMLRUNPARAM=b dune exec bin/GUI.exe
+
 check:
 	@bash check.sh
 
