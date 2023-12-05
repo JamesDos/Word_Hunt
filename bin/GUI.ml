@@ -17,6 +17,20 @@ let main () =
       (String.sub input_word_text 0 (String.length input_word_text - 1))
   in
 
+  let score = ref 0 in
+
+  let entered_words = ref (Array.make 0 "") in
+  let add_word word =
+    entered_words := Array.append !entered_words (Array.make 1 word)
+  in
+
+  let score_board = W.label ~size:40 (string_of_int !score) in
+
+  let update_score word =
+    if String.length word > 0 then score := !score + 400;
+    W.set_text score_board (string_of_int !score)
+  in
+
   let make_tile letter =
     let tile_label = Label.create ~size:50 letter in
     let action b = if b then add_letter letter else remove_letter letter in
@@ -27,10 +41,13 @@ let main () =
     (*Button.create ~size:50 ~label:tile_label_on*)
   in
 
+  let board_matrix = Array.make_matrix 4 4 (W.button "") in
+
   let rec make_rowi acc i j =
     if j < 0 then acc
     else
       let button = make_tile board.(i).(j) in
+      board_matrix.(i).(j) <- button;
       make_rowi (L.resident ~w:50 ~h:50 button :: acc) i (j - 1)
   in
 
@@ -38,9 +55,34 @@ let main () =
   let board_row2 = make_rowi [] 1 3 |> L.flat in
   let board_row3 = make_rowi [] 2 3 |> L.flat in
   let board_row4 = make_rowi [] 3 3 |> L.flat in
-  let game_board = L.tower [ board_row1; board_row2; board_row3; board_row4 ] in
+  let board_array = [ board_row1; board_row2; board_row3; board_row4 ] in
+  let game_board = L.tower board_array in
 
-  let input_word_field = L.tower [ L.resident ~w:width word_field ] in
+  let input_word_field =
+    L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
+  in
+
+  let reset_tiles matrix =
+    for i = 0 to 3 do
+      for j = 0 to 3 do
+        Button.reset (W.get_button matrix.(i).(j))
+      done
+    done
+  in
+  let reset_text_field m =
+    let field_word = W.get_text word_field in
+    if not (GameBoard.is_valid_word2 [] board) then add_word field_word;
+    update_score field_word;
+    W.set_text word_field "";
+    reset_tiles m
+  in
+
+  let enter_button =
+    let action _ = reset_text_field board_matrix in
+    W.button ~action ~kind:Button.Trigger "Enter Word"
+  in
+
+  let enter_button_flat = L.flat [ L.resident ~w:width enter_button ] in
 
   (*
   let input_word = W.label ~size:40 "" in
@@ -77,7 +119,7 @@ let main () =
 
   let page1 = L.tower [ layout ] in
 
-  let page2 = L.tower [ input_word_field; game_board ] in
+  let page2 = L.tower [ input_word_field; game_board; enter_button_flat ] in
 
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
