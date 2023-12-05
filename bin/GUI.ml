@@ -25,24 +25,32 @@ let main () =
 
   (*[remove_loc] mutates [entered_words_locs] by removing its last location.
      Requires that [entered_words_locs] is nonempty*)
-  let remove_loc =
-    entered_word_locs :=
+  let remove_loc _ =
+    let new_locs =
       if Array.length !entered_word_locs < 1 then !entered_word_locs
       else Array.sub !entered_word_locs 0 (Array.length !entered_word_locs - 1)
+    in
+    entered_word_locs := new_locs
   in
 
   (*[board_matrix] is a 2d array storing each tiles of [board]*)
   let board_matrix = Array.make_matrix 4 4 (W.button "") in
 
-  (* [add_letter l] appends [l] to [word_field]'s text*)
+  (* [add_letter l] appends [l] to [word_field]'s text and sets this string as
+      its new text*)
   let add_letter l = W.set_text word_field (W.get_text word_field ^ l) in
 
-  (* [remove_letter] removes the last letter of [word_field]'s text.
-     Requires that the text of [word_field] is nonempty*)
-  let remove_letter =
+  (* [remove_letter] removes the last letter of [word_field]'s text and sets
+     this string as its new text.
+      Requires that the text of [word_field] is nonempty*)
+  let remove_letter _ =
     let input_word_text = W.get_text word_field in
-    W.set_text word_field
-      (String.sub input_word_text 0 (String.length input_word_text - 1))
+    let length = String.length input_word_text in
+    let new_text =
+      if length < 1 then "" else String.sub input_word_text 0 (length - 1)
+    in
+    W.set_text word_field new_text;
+    print_endline ("text: " ^ W.get_text word_field)
   in
 
   (*[entered_words] is an array of the valid words entered by the player*)
@@ -76,8 +84,10 @@ let main () =
       if b then (
         add_letter letter;
         add_loc (Loc (i, j)))
-      else remove_letter;
-      remove_loc
+      else (
+        remove_letter letter;
+        print_endline (string_of_int (String.length (W.get_text word_field)));
+        remove_loc letter)
     in
     W.button
       ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
@@ -86,8 +96,9 @@ let main () =
     (*Button.create ~size:50 ~label:tile_label_on*)
   in
 
-  (*[make_rowi acc i j] generates a list of Layout residents that are buttons representing the
-     i, j th position of [board]. Each button at location (i, j) is also appended to [board_matrix]*)
+  (*[make_rowi acc i j] generates a list of Layout residents that are buttons
+    representing the i, j th position of [board]. Each button at location (i, j)
+    is also appended to [board_matrix]*)
   let rec make_rowi acc i j =
     if j < 0 then acc
     else
@@ -118,10 +129,13 @@ let main () =
   let reset_text_field m =
     let field_word = W.get_text word_field in
     if not (GameBoard.is_valid_word2 (Array.to_list !entered_word_locs) board)
-    then add_word field_word;
-    update_score field_word;
-    W.set_text word_field "";
-    reset_tiles m
+    then print_endline "not a valid word"
+    else (
+      print_endline "is a valid word";
+      add_word field_word;
+      update_score field_word;
+      W.set_text word_field "";
+      reset_tiles m)
   in
 
   let enter_button =

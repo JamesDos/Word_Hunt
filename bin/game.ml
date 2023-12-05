@@ -9,7 +9,8 @@ let board = GameBoard.game_board
 let eval_input str =
   let string_to_tuple_list str =
     str |> String.split_on_char ';'
-    |> List.map (fun s -> Scanf.sscanf s "(%d,%d)" (fun x y -> (x, y)))
+    |> List.map (fun s ->
+           Scanf.sscanf s "(%d,%d)" (fun x y -> GameBoard.Loc (x, y)))
   in
   BuildBoard.is_valid_word2 (string_to_tuple_list str) board
 
