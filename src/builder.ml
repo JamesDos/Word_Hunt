@@ -3,6 +3,8 @@ open Data_structures
 let () = Random.self_init ()
 
 module BuildBoard = struct
+  type location = Loc of int * int
+
   (*A character generator that generates letters based on how common they
     are found in the English language*)
   let random_char () =
@@ -94,22 +96,22 @@ module BuildBoard = struct
   Given a point (i, j), returns a list of all 8 surrounding points*)
   let possible_moves point =
     match point with
-    | x, y ->
+    | Loc (x, y) ->
         [
-          (x + 1, y);
-          (x - 1, y);
-          (x, y + 1);
-          (x, y - 1);
-          (x + 1, y + 1);
-          (x + 1, y - 1);
-          (x - 1, y + 1);
-          (x - 1, y - 1);
+          Loc (x + 1, y);
+          Loc (x - 1, y);
+          Loc (x, y + 1);
+          Loc (x, y - 1);
+          Loc (x + 1, y + 1);
+          Loc (x + 1, y - 1);
+          Loc (x - 1, y + 1);
+          Loc (x - 1, y - 1);
         ]
 
   (** Helper function used by valid_moves. 
   Determines if a location [point] is within the bounds of the board*)
   let is_valid_pos point =
-    match point with x, y -> x >= 0 && x <= 3 && y <= 3 && y >= 0
+    match point with Loc (x, y) -> x >= 0 && x <= 3 && y <= 3 && y >= 0
 
   (** Given a point, returns a list contain only valid locations*)
   let valid_moves point = List.filter is_valid_pos (possible_moves point)
@@ -131,6 +133,7 @@ module BuildBoard = struct
     next tile determined by valid_moves*)
   let is_valid_next_tile start next = List.mem next (valid_moves start)
 
+  (*
   (** Given two lists of locations [lst1] and [lst2], returns a tuple containing
    whether any two locations between lists are adjacent and a list containing 
    tuples the points in [lst2] that connect with points in [lst1]. 
@@ -171,10 +174,10 @@ module BuildBoard = struct
         && is_valid_word_aux str (index + 1) (curr_locations :: acc)
       else true
     in
-    String.length word > 2 && is_valid_word_aux word 0 []
+    String.length word > 2 && is_valid_word_aux word 0 [] *)
 
   (** Given a 2d array [board], returns the character at [loc]*)
-  let char_at loc board = match loc with x, y -> board.(x).(y)
+  let char_at loc board = match loc with Loc (x, y) -> board.(x).(y)
 
   (** Given a list of locations [loc_list] and a 2d array [board],
   returns the word that is made by taking each character in [loc_list] using
@@ -212,33 +215,35 @@ module BuildBoard = struct
     *)
 
   let rec traverse (grid : string array array) (i : int) (j : int)
-      (word : string) (order : (int * int) list)
-      (solutions : (string, (int * int) list) Hashtbl.t) : unit =
+      (word : string) (order : location list)
+      (solutions : (string, location list) Hashtbl.t) : unit =
     (* creates a copied grid *)
     let grid' = Array.map (fun a -> Array.copy a) grid in
     let char = grid'.(i).(j) in
     let word = word ^ char in
-    let new_order = order @ [ (i, j) ] in
+    let new_order = order @ [ Loc (i, j) ] in
     (*If word is not in trie, then prunes by ending traversal*)
     if not (Trie.search_word Dictionary.trie (Trie.to_char_list word)) then ()
     else Hashtbl.add solutions word new_order;
 
     (* Mark the current cell as visited by setting to an empty string *)
     grid'.(i).(j) <- "";
-    let neighbors = valid_moves (i, j) in
+    let neighbors = valid_moves (Loc (i, j)) in
     List.iter
-      (fun (next_i, next_j) ->
-        if
-          next_i >= 0
-          && next_i < Array.length grid
-          && next_j >= 0
-          && next_j < Array.length grid.(0)
-        then
-          (*Backtracking*)
-          match grid'.(next_i).(next_j) with
-          | cell when cell <> "" ->
-              traverse grid' next_i next_j word new_order solutions
-          | _ -> ())
+      (fun loc ->
+        match loc with
+        | Loc (next_i, next_j) -> (
+            if
+              next_i >= 0
+              && next_i < Array.length grid
+              && next_j >= 0
+              && next_j < Array.length grid.(0)
+            then
+              (*Backtracking*)
+              match grid'.(next_i).(next_j) with
+              | cell when cell <> "" ->
+                  traverse grid' next_i next_j word new_order solutions
+              | _ -> ()))
       neighbors;
     ()
 
@@ -258,7 +263,7 @@ in hashtable. This is a list of strings containing all the solutions in the grid
   Requires: solve to be called on [hashtable] before calling solutions on hashtable
       *)
   let solutions hashtable =
-    let getKeys (tbl : (string, (int * int) list) Hashtbl.t) : 'a list =
+    let getKeys (tbl : (string, location list) Hashtbl.t) : 'a list =
       let key_list = ref [] in
       Hashtbl.iter (fun key _ -> key_list := key :: !key_list) tbl;
       !key_list

@@ -234,55 +234,82 @@ let board_tests =
     (*is_valid_word tests*)
     test_is_valid_word "is_valid_word '' test_board1" false [] test_board1;
     test_is_valid_word "is_valid_word 'A' test_board1" false
-      [ (0, 1) ]
+      [ Loc (0, 1) ]
       test_board1;
     test_is_valid_word "is_valid_word 'A' test_board1" false
-      [ (0, 1) ]
+      [ Loc (0, 1) ]
       test_board1;
     test_is_valid_word "is_valid_word 'AT' test_board1" false
-      [ (0, 1); (0, 2) ]
+      [ Loc (0, 1); Loc (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAT' test_board1" true
-      [ (0, 0); (0, 1); (0, 2) ]
+      [ Loc (0, 0); Loc (0, 1); Loc (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CTS' test_board1" false
-      [ (0, 0); (0, 2); (3, 3) ]
+      [ Loc (0, 0); Loc (0, 2); Loc (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAG' test_board1" false
-      [ (0, 0); (0, 1); (2, 3) ]
+      [ Loc (0, 0); Loc (0, 1); Loc (2, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'WORDS' test_board1" true
-      [ (1, 0); (1, 1); (2, 1); (2, 2); (3, 3) ]
+      [ Loc (1, 0); Loc (1, 1); Loc (2, 1); Loc (2, 2); Loc (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'WORDT' test_board1" false
-      [ (1, 0); (1, 1); (2, 1); (2, 2); (0, 3) ]
+      [ Loc (1, 0); Loc (1, 1); Loc (2, 1); Loc (2, 2); Loc (0, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CACA' test_board1" false
-      [ (0, 0); (0, 1); (0, 0); (0, 0) ]
+      [ Loc (0, 0); Loc (0, 1); Loc (0, 0); Loc (0, 0) ]
       test_board1;
     test_is_valid_word "is_valid_word 'WINI' test_board1" false
-      [ (0, 1); (0, 2); (0, 3); (0, 2) ]
+      [ Loc (0, 1); Loc (0, 2); Loc (0, 3); Loc (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'FRAGS' test_board1" true
-      [ (1, 2); (2, 1); (3, 2); (2, 3); (3, 3) ]
+      [ Loc (1, 2); Loc (2, 1); Loc (3, 2); Loc (2, 3); Loc (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAFAC' test_board1" false
-      [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
+      [ Loc (0, 0); Loc (0, 1); Loc (1, 2); Loc (0, 1); Loc (0, 0) ]
       test_board1;
     test_is_valid_word "is_valid_word 'INROADS' test_board1" true
-      [ (2, 0); (3, 0); (2, 1); (3, 1); (3, 2); (2, 2); (3, 3) ]
+      [
+        Loc (2, 0);
+        Loc (3, 0);
+        Loc (2, 1);
+        Loc (3, 1);
+        Loc (3, 2);
+        Loc (2, 2);
+        Loc (3, 3);
+      ]
       test_board1;
     test_is_valid_word "is_valid_word test_board2" false
-      [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
+      [ Loc (0, 0); Loc (0, 1); Loc (1, 2); Loc (0, 1); Loc (0, 0) ]
       test_board2;
     test_is_valid_word "is_valid_word 'CASTAWAYS' test_board3" true
-      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2); (3, 1) ]
+      [
+        Loc (0, 0);
+        Loc (0, 1);
+        Loc (0, 2);
+        Loc (0, 3);
+        Loc (1, 3);
+        Loc (2, 3);
+        Loc (3, 3);
+        Loc (3, 2);
+        Loc (3, 1);
+      ]
       test_board3;
     test_is_valid_word "is_valid_word 'CASTAWAY' test_board3" true
-      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2) ]
+      [
+        Loc (0, 0);
+        Loc (0, 1);
+        Loc (0, 2);
+        Loc (0, 3);
+        Loc (1, 3);
+        Loc (2, 3);
+        Loc (3, 3);
+        Loc (3, 2);
+      ]
       test_board3;
     test_is_valid_word "is_valid_word 'CATS' test_board3" false
-      [ (0, 0); (0, 1); (0, 3); (0, 2) ]
+      [ Loc (0, 0); Loc (0, 1); Loc (0, 3); Loc (0, 2) ]
       test_board3;
     (*solve tests*)
     test_solve "Test_BuildBord.solve test_board1"
