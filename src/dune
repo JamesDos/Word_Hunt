@@ -9,4 +9,6 @@
 (library
  (name data_structures)
  (modules data_structures)
- (public_name Data_Structures))
+ (public_name Data_Structures)
+ (instrumentation
+  (backend bisect_ppx)))

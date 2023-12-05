@@ -676,9 +676,9 @@ module BuildBoard = struct
     in
     let rand = Random.float 1.0 in
     <span data-count="48">l</span>et rec find_char letter =
-      <span data-count="372">m</span>atch letter with
+      <span data-count="423">m</span>atch letter with
       | <span data-count="0">[</span>] -&gt; failwith "Should not happen"
-      | <span data-count="372">(</span>p, c) :: t -&gt; if rand &lt;= p then <span data-count="48">c</span> else <span data-count="324">f</span>ind_char t
+      | <span data-count="423">(</span>p, c) :: t -&gt; if rand &lt;= p then <span data-count="48">c</span> else <span data-count="375">f</span>ind_char t
     in
     find_char cdf
 
