@@ -12,7 +12,7 @@ let eval_input str =
     |> List.map (fun s ->
            Scanf.sscanf s "(%d,%d)" (fun x y -> GameBoard.Loc (x, y)))
   in
-  BuildBoard.is_valid_word2 (string_to_tuple_list str) board
+  BuildBoard.is_valid_word (string_to_tuple_list str) board
 
 (* read-eval-print loop *)
 let rec repl (eval : string -> bool) : unit =

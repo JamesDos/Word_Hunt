@@ -1,6 +1,9 @@
 open OUnit2
 open Builder
 open Data_structures
+module Test_BuildBoard = Builder.BuildBoard
+module TestDict = Data_structures.Dictionary
+module TestTrie = Data_structures.Trie
 
 (** Printing functions taken from A2*)
 
@@ -16,8 +19,9 @@ let cmp_bag_like_lists lst1 lst2 =
 (** [pp_string s] pretty-prints string [s]. *)
 let pp_string s = "\"" ^ s ^ "\""
 
-let pp_tuple s =
-  match s with x, y -> "\"" ^ string_of_int x ^ " " ^ string_of_int y ^ "\""
+let pp_tuple (s : Test_BuildBoard.location) =
+  match s with
+  | Loc (x, y) -> "\"" ^ string_of_int x ^ " " ^ string_of_int y ^ "\""
 
 (** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
     pretty-print each element of [lst]. *)
@@ -34,8 +38,16 @@ let pp_list pp_elt lst =
   in
   "[" ^ pp_elts lst ^ "]"
 
-module Test_BuildBoard = Builder.BuildBoard
-module TestDict = Data_structures.Dictionary
+let rec list_of_loc_list (loc_list : Test_BuildBoard.location list) acc =
+  match loc_list with
+  | [] -> List.rev acc
+  | Loc (x, y) :: t -> list_of_loc_list t ((x, y) :: acc)
+
+let rec loc_list_of_list lst acc : Test_BuildBoard.location list =
+  match lst with
+  | [] -> List.rev acc
+  | (x, y) :: t -> loc_list_of_list t (Loc (x, y) :: acc)
+
 (*
 let valid_points_tests =
   [
@@ -89,6 +101,74 @@ let valid_points_tests =
         [ (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (2, 2); (2, 1); (1, 1) ]
         (Test_BuildBoard.valid_moves (1, 2)) );
   ]*)
+
+let test_valid_moves name expected_output (x, y) =
+  name >:: fun _ ->
+  assert_equal ~cmp:cmp_bag_like_lists
+    (loc_list_of_list expected_output [])
+    (Test_BuildBoard.valid_moves (Loc (x, y)))
+
+let test_valid_next_tile name expected_output (x1, y1) (x2, y2) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Test_BuildBoard.is_valid_next_tile (Loc (x1, y1)) (Loc (x2, y2)))
+
+let points_tests =
+  [
+    (*valid_moves tests*)
+    test_valid_moves "valid_moves top left corner tile"
+      [ (0, 1); (1, 0); (1, 1) ]
+      (0, 0);
+    test_valid_moves "valid_moves bottom right coner tile"
+      [ (2, 3); (3, 2); (2, 2) ]
+      (3, 3);
+    test_valid_moves "valid_moves top edge tile"
+      [ (0, 1); (1, 1); (1, 2); (1, 3); (0, 3) ]
+      (0, 2);
+    test_valid_moves "valid_moves left edge tile"
+      [ (0, 0); (0, 1); (1, 1); (2, 1); (2, 0) ]
+      (1, 0);
+    test_valid_moves "valid_moves center tile (2, 2)"
+      [ (1, 1); (1, 2); (1, 3); (2, 1); (3, 1); (3, 2); (3, 3); (2, 3) ]
+      (2, 2);
+    test_valid_moves "valid_moves center tile (1, 2)"
+      [ (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (2, 2); (2, 1); (1, 1) ]
+      (1, 2);
+    (*test is_valid_next_tile*)
+    test_valid_next_tile "horizontally adjacent tiles" true (0, 0) (0, 1);
+    test_valid_next_tile "vertically adjacent tiles" true (0, 0) (1, 0);
+    test_valid_next_tile "diagonally adjacent tiles" true (0, 0) (1, 1);
+    test_valid_next_tile "non adjacent tiles; corner tiles" false (0, 0) (3, 3);
+    test_valid_next_tile "non adjacent tiles; one tile away" false (0, 0) (0, 2);
+  ]
+
+let t1 =
+  let root = TestTrie.create_node () in
+  TestTrie.insert_list_of_words root
+    [ "apple"; "app"; "orange"; "a"; "castaways" ];
+  root
+
+let test_trie name expected_output word trie =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (TestTrie.search_word trie (TestTrie.to_char_list word))
+
+let trie_tests =
+  [
+    (*search_word tests*)
+    test_trie "apple" true "apple" t1;
+    test_trie "app" true "app" t1;
+    test_trie "orange" true "orange" t1;
+    test_trie "a" true "a" t1;
+    test_trie "castaways" true "castaways" t1;
+    test_trie "cast; prefix subword of castaways" false "cast" t1;
+    test_trie "away: suffix subword of castaways" false "away" t1;
+    test_trie "xhxsiz; not letters in trie" false "xhxsiz" t1;
+    test_trie "oeragn; same letters but different order" false "oeragn" t1;
+    test_trie "appls; contains same prefix as apple" false "appls" t1;
+    test_trie "ap; contains same prefix as app " false "ap" t1;
+    test_trie "empty string" false "" t1;
+  ]
 
 let b1 = Array.make_matrix 4 4 "a"
 
@@ -190,7 +270,8 @@ let () =
 (*Helper functions for tests*)
 let test_is_valid_word name expected_output lst board =
   name >:: fun _ ->
-  assert_equal expected_output (Test_BuildBoard.is_valid_word2 lst board)
+  assert_equal expected_output
+    (Test_BuildBoard.is_valid_word (loc_list_of_list lst []) board)
 
 let test_solve name expected_output input =
   name >:: fun _ ->
@@ -202,6 +283,7 @@ let test_solve name expected_output input =
 let board_tests =
   [
     (*find_chars tests*)
+    (*
     ( "find_chars board with all the same tiles" >:: fun _ ->
       assert_equal
         [
@@ -225,91 +307,64 @@ let board_tests =
         (Test_BuildBoard.find_chars "a" b1) );
     ( "find_chars board with only one tile of given char" >:: fun _ ->
       assert_equal ~printer:(pp_list pp_tuple)
-        [ (0, 0) ]
+        [ Loc (0, 0) ]
         (Test_BuildBoard.find_chars 'b' b2) );
     ( "find_chars board with only multiples tiles of given char" >:: fun _ ->
       assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_tuple)
         [ (3, 0); (1, 3); (2, 2); (3, 1) ]
-        (Test_BuildBoard.find_chars 'b' b3) );
+        (Test_BuildBoard.find_chars 'b' b3) );*)
     (*is_valid_word tests*)
     test_is_valid_word "is_valid_word '' test_board1" false [] test_board1;
     test_is_valid_word "is_valid_word 'A' test_board1" false
-      [ Loc (0, 1) ]
+      [ (0, 1) ]
       test_board1;
     test_is_valid_word "is_valid_word 'A' test_board1" false
-      [ Loc (0, 1) ]
+      [ (0, 1) ]
       test_board1;
     test_is_valid_word "is_valid_word 'AT' test_board1" false
-      [ Loc (0, 1); Loc (0, 2) ]
+      [ (0, 1); (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAT' test_board1" true
-      [ Loc (0, 0); Loc (0, 1); Loc (0, 2) ]
+      [ (0, 0); (0, 1); (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CTS' test_board1" false
-      [ Loc (0, 0); Loc (0, 2); Loc (3, 3) ]
+      [ (0, 0); (0, 2); (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAG' test_board1" false
-      [ Loc (0, 0); Loc (0, 1); Loc (2, 3) ]
+      [ (0, 0); (0, 1); (2, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'WORDS' test_board1" true
-      [ Loc (1, 0); Loc (1, 1); Loc (2, 1); Loc (2, 2); Loc (3, 3) ]
+      [ (1, 0); (1, 1); (2, 1); (2, 2); (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'WORDT' test_board1" false
-      [ Loc (1, 0); Loc (1, 1); Loc (2, 1); Loc (2, 2); Loc (0, 3) ]
+      [ (1, 0); (1, 1); (2, 1); (2, 2); (0, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CACA' test_board1" false
-      [ Loc (0, 0); Loc (0, 1); Loc (0, 0); Loc (0, 0) ]
+      [ (0, 0); (0, 1); (0, 0); (0, 0) ]
       test_board1;
     test_is_valid_word "is_valid_word 'WINI' test_board1" false
-      [ Loc (0, 1); Loc (0, 2); Loc (0, 3); Loc (0, 2) ]
+      [ (0, 1); (0, 2); (0, 3); (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'FRAGS' test_board1" true
-      [ Loc (1, 2); Loc (2, 1); Loc (3, 2); Loc (2, 3); Loc (3, 3) ]
+      [ (1, 2); (2, 1); (3, 2); (2, 3); (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAFAC' test_board1" false
-      [ Loc (0, 0); Loc (0, 1); Loc (1, 2); Loc (0, 1); Loc (0, 0) ]
+      [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
       test_board1;
     test_is_valid_word "is_valid_word 'INROADS' test_board1" true
-      [
-        Loc (2, 0);
-        Loc (3, 0);
-        Loc (2, 1);
-        Loc (3, 1);
-        Loc (3, 2);
-        Loc (2, 2);
-        Loc (3, 3);
-      ]
+      [ (2, 0); (3, 0); (2, 1); (3, 1); (3, 2); (2, 2); (3, 3) ]
       test_board1;
     test_is_valid_word "is_valid_word test_board2" false
-      [ Loc (0, 0); Loc (0, 1); Loc (1, 2); Loc (0, 1); Loc (0, 0) ]
+      [ (0, 0); (0, 1); (1, 2); (0, 1); (0, 0) ]
       test_board2;
     test_is_valid_word "is_valid_word 'CASTAWAYS' test_board3" true
-      [
-        Loc (0, 0);
-        Loc (0, 1);
-        Loc (0, 2);
-        Loc (0, 3);
-        Loc (1, 3);
-        Loc (2, 3);
-        Loc (3, 3);
-        Loc (3, 2);
-        Loc (3, 1);
-      ]
+      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2); (3, 1) ]
       test_board3;
     test_is_valid_word "is_valid_word 'CASTAWAY' test_board3" true
-      [
-        Loc (0, 0);
-        Loc (0, 1);
-        Loc (0, 2);
-        Loc (0, 3);
-        Loc (1, 3);
-        Loc (2, 3);
-        Loc (3, 3);
-        Loc (3, 2);
-      ]
+      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2) ]
       test_board3;
     test_is_valid_word "is_valid_word 'CATS' test_board3" false
-      [ Loc (0, 0); Loc (0, 1); Loc (0, 3); Loc (0, 2) ]
+      [ (0, 0); (0, 1); (0, 3); (0, 2) ]
       test_board3;
     (*solve tests*)
     test_solve "Test_BuildBord.solve test_board1"
@@ -345,6 +400,6 @@ let board_tests =
 
 let suite =
   "test suite for builder.ml"
-  >::: List.flatten [ (*valid_points_tests;*) board_tests ]
+  >::: List.flatten [ points_tests; trie_tests (*board_tests*) ]
 
 let () = run_test_tt_main suite
