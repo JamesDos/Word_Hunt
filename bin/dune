@@ -7,3 +7,8 @@
  (name GUI)
  (modules GUI)
  (libraries Builder Data_Structures str bogue))
+
+(executable
+ (name timer)
+ (modules timer)
+ (libraries Builder Data_Structures str bogue))
