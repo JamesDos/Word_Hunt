@@ -3,6 +3,7 @@ open Builder
 open Data_structures
 module Test_BuildBoard = Builder.BuildBoard
 module TestDict = Data_structures.Dictionary
+module TestTrie = Data_structures.Trie
 
 (** Printing functions taken from A2*)
 
@@ -141,6 +142,34 @@ let points_tests =
     test_valid_next_tile "non adjacent tiles; one tile away" false (0, 0) (0, 2);
   ]
 
+let t1 =
+  let root = TestTrie.create_node () in
+  TestTrie.insert_list_of_words root
+    [ "apple"; "app"; "orange"; "a"; "castaways" ];
+  root
+
+let test_trie name expected_output word trie =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (TestTrie.search_word trie (TestTrie.to_char_list word))
+
+let trie_tests =
+  [
+    (*search_word tests*)
+    test_trie "apple" true "apple" t1;
+    test_trie "app" true "app" t1;
+    test_trie "orange" true "orange" t1;
+    test_trie "a" true "a" t1;
+    test_trie "castaways" true "castaways" t1;
+    test_trie "cast; prefix subword of castaways" false "cast" t1;
+    test_trie "away: suffix subword of castaways" false "away" t1;
+    test_trie "xhxsiz; not letters in trie" false "xhxsiz" t1;
+    test_trie "oeragn; same letters but different order" false "oeragn" t1;
+    test_trie "appls; contains same prefix as apple" false "appls" t1;
+    test_trie "ap; contains same prefix as app " false "ap" t1;
+    test_trie "empty string" false "" t1;
+  ]
+
 let b1 = Array.make_matrix 4 4 "a"
 
 let b2 =
@@ -242,7 +271,7 @@ let () =
 let test_is_valid_word name expected_output lst board =
   name >:: fun _ ->
   assert_equal expected_output
-    (Test_BuildBoard.is_valid_word2 (loc_list_of_list lst []) board)
+    (Test_BuildBoard.is_valid_word (loc_list_of_list lst []) board)
 
 let test_solve name expected_output input =
   name >:: fun _ ->
@@ -370,6 +399,7 @@ let board_tests =
   ]
 
 let suite =
-  "test suite for builder.ml" >::: List.flatten [ points_tests (*board_tests*) ]
+  "test suite for builder.ml"
+  >::: List.flatten [ points_tests; trie_tests (*board_tests*) ]
 
 let () = run_test_tt_main suite

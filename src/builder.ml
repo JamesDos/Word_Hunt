@@ -200,18 +200,18 @@ module BuildBoard = struct
   of word hunt. That is, the word is a valid english word, doesn't use the 
   letters from the same location multiple times and each letter is adjacent to 
   to the letter before and after it.*)
-  let is_valid_word2 loc_list board =
-    let rec is_valid_word2_aux loc_list acc =
+  let is_valid_word loc_list board =
+    let rec is_valid_word_aux loc_list acc =
       match loc_list with
       | [] -> true
       | [ x ] -> not (List.mem x acc)
       | loc1 :: loc2 :: t ->
           is_valid_next_tile loc1 loc2
           && (not (List.mem loc1 acc))
-          && is_valid_word2_aux (loc2 :: t) (loc1 :: acc)
+          && is_valid_word_aux (loc2 :: t) (loc1 :: acc)
     in
     List.length loc_list > 2
-    && is_valid_word2_aux loc_list []
+    && is_valid_word_aux loc_list []
     && Trie.search_word Dictionary.trie
          (Trie.to_char_list (make_word loc_list board))
 

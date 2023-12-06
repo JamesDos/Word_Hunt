@@ -5,12 +5,12 @@ module Trie = struct
     children : (char, trie_node) Hashtbl.t;
   }
 
-  (**create_node creates an empty trie*)
+  (**[create_node] creates an empty trie*)
   let create_node () =
     { value = None; is_end_of_word = false; children = Hashtbl.create 10 }
 
-  (**insert_word [node] [word] inserts [word] into the trie [node]*)
-  let rec insert_word node word =
+  (**[insert_word node word] inserts char list [word] into the trie [node]*)
+  let rec insert_word word node =
     match word with
     | [] -> node.is_end_of_word <- true
     | hd :: tl ->
@@ -21,9 +21,9 @@ module Trie = struct
             Hashtbl.add node.children hd new_node;
             new_node
         in
-        insert_word next_node tl
+        insert_word tl next_node
 
-  (**search_word [node] [word] returns whether [word] is a present in the trie [node]*)
+  (**[search_word node word] returns whether [word] is a present in the trie [node]*)
   let rec search_word node word =
     match word with
     | [] -> node.is_end_of_word
@@ -33,15 +33,34 @@ module Trie = struct
           search_word next_node tl
         with Not_found -> false)
 
-  (**insert_list_of_words inserts each word in string list [words] into trie [node]*)
-  let insert_list_of_words node words =
-    List.iter
-      (fun word -> insert_word node (List.of_seq (String.to_seq word)))
-      words
-
-  (** to_char_list [word] is a list of characters of [word] in their original order.
+  (** [to_char_list word] is a list of characters of [word] in their original order.
       Example: to_char_list cat is ['c'; 'a'; 't'] *)
   let to_char_list word = List.of_seq (String.to_seq word)
+
+  (**[insert_list_of_words node words] inserts each word in string list [words] 
+      into trie [node]*)
+  let insert_list_of_words node words =
+    List.iter (fun word -> insert_word (to_char_list word) node) words
+
+  (**[to_string trie] returns a string representation of [trie]*)
+  let to_string trie =
+    let rec to_string_helper node depth =
+      let indent = String.make (depth * 2) ' ' in
+      let value_str =
+        match node.value with
+        | Some c -> String.make 1 c
+        | None -> if depth = 0 then "ROOT" else ""
+      in
+      let end_of_word_str = if node.is_end_of_word then " (EOW)" else "" in
+      let children_str =
+        Hashtbl.fold
+          (fun char child acc ->
+            acc ^ to_string_helper child (depth + 1) ^ "\n")
+          node.children ""
+      in
+      indent ^ value_str ^ end_of_word_str ^ "\n" ^ children_str
+    in
+    to_string_helper trie 0
 end
 
 module Dictionary = struct

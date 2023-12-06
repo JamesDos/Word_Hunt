@@ -77,13 +77,11 @@ let main () =
   in
 
   (*[entered_words] is an array of the valid words entered by the player*)
-  let entered_words = ref (Array.make 0 "") in
+  let entered_words = ref [] in
 
   (*[add_word word] mutates [entered_words] by appending [word] to it. Requires
-    [word] is   not a member of [entered_words]*)
-  let add_word word =
-    entered_words := Array.append !entered_words (Array.make 1 word)
-  in
+    [word] is not a member of [entered_words]*)
+  let add_word word = entered_words := word :: !entered_words in
 
   let score_board = W.label ~size:40 (string_of_int !score) in
 
@@ -178,8 +176,8 @@ let main () =
   let reset_text_field m =
     let field_word = W.get_text word_field in
     if
-      (not (GameBoard.is_valid_word2 (List.rev !entered_locs) board))
-      || Array.mem field_word !entered_words
+      (not (GameBoard.is_valid_word (List.rev !entered_locs) board))
+      || List.mem field_word !entered_words
     then (
       print_endline "not a valid word";
       print_endline (GameBoard.make_word (List.rev !entered_locs) board))
