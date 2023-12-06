@@ -113,7 +113,8 @@ module BuildBoard = struct
   let is_valid_pos point =
     match point with Loc (x, y) -> x >= 0 && x <= 3 && y <= 3 && y >= 0
 
-  (** Given a point, returns a list contain only valid locations*)
+  (** [valid_moves point] is a list thats contains all points adjacent to 
+      [point]*)
   let valid_moves point = List.filter is_valid_pos (possible_moves point)
 
   (** Given a character [x], finds the locations in [board] that has that 
@@ -131,7 +132,14 @@ module BuildBoard = struct
 
   (** Given a starting location [start], returns whether [next] is a valid
     next tile determined by valid_moves*)
-  let is_valid_next_tile start next = List.mem next (valid_moves start)
+  let is_valid_next_tile start next =
+    let rec aux lst next =
+      match (lst, next) with
+      | [], _ -> false
+      | Loc (x1, y1) :: t, Loc (x2, y2) ->
+          if x1 = x2 && y1 = y2 then true else aux t next
+    in
+    aux (valid_moves start) next
 
   (*
   (** Given two lists of locations [lst1] and [lst2], returns a tuple containing
