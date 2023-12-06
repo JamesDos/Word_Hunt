@@ -141,49 +141,6 @@ module BuildBoard = struct
     in
     aux (valid_moves start) next
 
-  (*
-  (** Given two lists of locations [lst1] and [lst2], returns a tuple containing
-   whether any two locations between lists are adjacent and a list containing 
-   tuples the points in [lst2] that connect with points in [lst1]. 
-   is_connection [(0, 0); (2, 2)] [(0, 1); (3; 2)] is 
-   (true, [(0, 1); (2, 3)]. 
-   is_connection [(0,0); (3,3)] [(0, 2); (3, 1)] is (false, [])*)
-  let rec has_connection loc_lst1 loc_lst2 =
-    let rec compare_loc elm lst =
-      match lst with
-      | [] -> (false, [])
-      | h :: t ->
-          if is_valid_next_tile elm h then (true, h :: snd (compare_loc elm t))
-          else (fst (compare_loc elm t), snd (compare_loc elm t))
-    in
-    let rec compare_lists lst1 lst2 =
-      match lst1 with
-      | [] -> (false, [])
-      | h :: t ->
-          let tup = compare_loc h lst2 in
-          if fst tup then (true, snd tup @ snd (compare_lists t lst2))
-          else (fst (compare_lists t lst2), snd (compare_lists t lst2))
-    in
-    compare_lists loc_lst1 loc_lst2
-
-  (** Given a word [word], is_valid_word determines whether [word] is a 
-    valid word in [board]. That is word is not out of bounds, is in the dictionary, 
-    and each letter is of [word] is adjacent to each other*)
-  let is_valid_word (word : string) (board : char array array) : bool =
-    let rec is_valid_word_aux str index acc =
-      if index < String.length str - 1 then
-        let curr_char = String.get str index in
-        let curr_locations = find_chars curr_char board in
-        let next_char = String.get str (index + 1) in
-        let next_locations = find_chars next_char board in
-        let tup = has_connection curr_locations next_locations in
-        fst tup
-        && (not (List.mem (snd tup) acc))
-        && is_valid_word_aux str (index + 1) (curr_locations :: acc)
-      else true
-    in
-    String.length word > 2 && is_valid_word_aux word 0 [] *)
-
   (** Given a 2d array [board], returns the character at [loc]*)
   let char_at loc board = match loc with Loc (x, y) -> board.(x).(y)
 
@@ -266,9 +223,9 @@ module BuildBoard = struct
       done
     done
 
-  (** Given a [hashtable] of solutions, solutions returns a list of all keys 
+  (** Given a [hashtable] of solutions, [solutions hashtable] returns a list of all keys 
 in hashtable. This is a list of strings containing all the solutions in the grid, ordered from longest to shortest length.
-  Requires: solve to be called on [hashtable] before calling solutions on hashtable
+  Requires: [solve] to be called on [hashtable] before calling solutions on hashtable
       *)
   let solutions hashtable =
     let getKeys (tbl : (string, location list) Hashtbl.t) : 'a list =
@@ -285,12 +242,14 @@ in hashtable. This is a list of strings containing all the solutions in the grid
       as [word_list]*)
   let longest_words word_lst n =
     let sorted =
+      let compare = String.compare in
+      let no_dups = List.sort_uniq compare word_lst in
       List.sort
         (fun x y ->
           if String.length x < String.length y then 1
-          else if String.length x > String.length y then -1
+          else if String.length y < String.length x then -1
           else 0)
-        word_lst
+        no_dups
     in
     let rec take_n word_lst n acc =
       match word_lst with

@@ -102,12 +102,19 @@ let valid_points_tests =
         (Test_BuildBoard.valid_moves (1, 2)) );
   ]*)
 
+(**[test_valid_pos] is a helper function to test [Builder.is_valid_pos]*)
+let test_valid_pos name expected_output (x, y) =
+  name >:: fun _ ->
+  assert_equal expected_output (Test_BuildBoard.is_valid_pos (Loc (x, y)))
+
+(**[test_valid_moves] is a helper function to test [Builder.valid_moves]*)
 let test_valid_moves name expected_output (x, y) =
   name >:: fun _ ->
   assert_equal ~cmp:cmp_bag_like_lists
     (loc_list_of_list expected_output [])
     (Test_BuildBoard.valid_moves (Loc (x, y)))
 
+(**[test_valid_next_tile] is a helper function to test [Builder.is_valid_next_tile]*)
 let test_valid_next_tile name expected_output (x1, y1) (x2, y2) =
   name >:: fun _ ->
   assert_equal expected_output
@@ -115,6 +122,10 @@ let test_valid_next_tile name expected_output (x1, y1) (x2, y2) =
 
 let points_tests =
   [
+    (*is_valid_pos tests*)
+    test_valid_pos "valid pos corner (0, 0)" true (0, 0);
+    test_valid_pos "valid pos edge (1, 3)" true (1, 3);
+    test_valid_pos "valid pos center tile (2, 1)" true (2, 1);
     (*valid_moves tests*)
     test_valid_moves "valid_moves top left corner tile"
       [ (0, 1); (1, 0); (1, 1) ]
@@ -148,6 +159,8 @@ let t1 =
     [ "apple"; "app"; "orange"; "a"; "castaways" ];
   root
 
+let t2 = TestDict.trie
+
 let test_trie name expected_output word trie =
   name >:: fun _ ->
   assert_equal expected_output
@@ -155,7 +168,7 @@ let test_trie name expected_output word trie =
 
 let trie_tests =
   [
-    (*search_word tests*)
+    (*search_word t1 tests*)
     test_trie "apple" true "apple" t1;
     test_trie "app" true "app" t1;
     test_trie "orange" true "orange" t1;
@@ -168,6 +181,28 @@ let trie_tests =
     test_trie "appls; contains same prefix as apple" false "appls" t1;
     test_trie "ap; contains same prefix as app " false "ap" t1;
     test_trie "empty string" false "" t1;
+    (*search_word TestDict.trie tests*)
+    test_trie "a t2" false "a" t2;
+    test_trie "A t2" false "A" t2;
+    test_trie "and t2 (only accepts uppercase letters)" false "and" t2;
+    test_trie "APPLE t2" true "APPLE" t2;
+    test_trie "APP t2" true "APP" t2;
+    test_trie "ORANGE t2" true "ORANGE" t2;
+    test_trie "HIPPOPOTAMUSES t2" true "HIPPOPOTAMUSES" t2;
+    test_trie "SAJFKDLSFD t2" false "SAJFKDLSFD" t2;
+  ]
+
+(**[test_is_word] is a helper function to test Dictionary.is_word*)
+let test_is_word name expected_output word =
+  name >:: fun _ -> assert_equal expected_output (TestDict.is_word word)
+
+let dict_tests =
+  [
+    (*is_word tests*)
+    test_is_word "is_word valid word a" true "a";
+    test_is_word "is_word valid word empty string" false "";
+    test_is_word "is_word valid word fduafojal" false "fduafojal";
+    test_is_word "is_word valid word HIPPOPOTAMUSES" true "hippopotamuses";
   ]
 
 let b1 = Array.make_matrix 4 4 "a"
@@ -267,12 +302,19 @@ let () = Test_BuildBoard.print_board test_board1
 let () =
   print_endline (pp_list pp_string (Test_BuildBoard.solutions empty_hashtable))
 
-(*Helper functions for tests*)
+(**[test_make_word] is a helper function to test Builder.make_word*)
+let test_make_word name expected_output lst board =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Test_BuildBoard.make_word (loc_list_of_list lst []) board)
+
+(**[test_is_valid_words] is a helper function to test Builder.is_valid_word*)
 let test_is_valid_word name expected_output lst board =
   name >:: fun _ ->
   assert_equal expected_output
     (Test_BuildBoard.is_valid_word (loc_list_of_list lst []) board)
 
+(**[test_solve] is a helper function to test Builder.solve*)
 let test_solve name expected_output input =
   name >:: fun _ ->
   let hashtable = Hashtbl.create 10 in
@@ -313,6 +355,23 @@ let board_tests =
       assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_tuple)
         [ (3, 0); (1, 3); (2, 2); (3, 1) ]
         (Test_BuildBoard.find_chars 'b' b3) );*)
+    (*make_word tests*)
+    test_make_word "make word empty loc lst" "" [] test_board1;
+    test_make_word "make word singeton loc lst" "C" [ (0, 0) ] test_board1;
+    test_make_word "make word CAT test_board1" "CAT"
+      [ (0, 0); (0, 1); (0, 2) ]
+      test_board1;
+    test_make_word "make word ACT test_board1" "ACT"
+      [ (0, 1); (0, 0); (0, 2) ]
+      test_board1;
+    test_make_word "make word DDA; board with multiple of the same letters"
+      "DDA"
+      [ (0, 3); (2, 2); (3, 2); (0, 1) ]
+      test_board1;
+    test_make_word "make word DDA; board with multiple of the same letters"
+      "DDA; different order"
+      [ (2, 2); (0, 3); (0, 1); (3, 2) ]
+      test_board1;
     (*is_valid_word tests*)
     test_is_valid_word "is_valid_word '' test_board1" false [] test_board1;
     test_is_valid_word "is_valid_word 'A' test_board1" false

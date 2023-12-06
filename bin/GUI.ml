@@ -152,7 +152,7 @@ let main () =
     else
       let button = make_tile board.(i).(j) i j in
       board_matrix.(i).(j) <- button;
-      make_rowi (L.resident ~w:50 ~h:50 button :: acc) i (j - 1)
+      make_rowi (L.resident ~w:(width / 4) ~h:70 button :: acc) i (j - 1)
   in
 
   (*creating the board*)
@@ -161,7 +161,10 @@ let main () =
   let board_row3 = make_rowi [] 2 3 |> L.flat in
   let board_row4 = make_rowi [] 3 3 |> L.flat in
   let board_array = [ board_row1; board_row2; board_row3; board_row4 ] in
-  let game_board = L.tower board_array in
+
+  let game_board =
+    L.tower ~hmargin:(width / 2) ~align:Draw.Center board_array
+  in
 
   let input_word_field =
     L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
@@ -196,7 +199,9 @@ let main () =
     W.button ~action ~kind:Button.Trigger "Enter Word"
   in
 
-  let enter_button_flat = L.flat [ L.resident ~w:width enter_button ] in
+  let enter_button_flat =
+    L.flat ~margins:100 [ L.resident ~w:(width * 2) enter_button ]
+  in
 
   (*
   let input_word = W.label ~size:40 "" in
@@ -231,20 +236,55 @@ let main () =
     L.tower [ L.resident ~w:400 input; L.resident ~w:400 ~h:200 label ]
   in
 
+  (*TODO: Make lists for all user inputted words and longest words that could have been made*)
+  let convert_str_lst_to_str str_lst =
+    let formatted_lines =
+      List.mapi (fun i s -> Printf.sprintf "%d. %s" (i + 1) s) str_lst
+    in
+    String.concat "\n" formatted_lines
+  in
+
+  let board_solutions =
+    let hashtable = Hashtbl.create 10 in
+    GameBoard.solve board hashtable;
+    GameBoard.solutions hashtable
+  in
+
+  let top_user_words = !entered_words in
+
+  let top_possible_words = GameBoard.longest_words board_solutions 200 in
+
+  let top_user_words_display =
+    W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_user_words)
+  in
+
+  let top_possible_words_display =
+    W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_possible_words)
+  in
+
+  let display_lists =
+    L.flat
+      [
+        L.resident top_user_words_display; L.resident top_possible_words_display;
+      ]
+  in
+
+  let ending_message = W.label ~size:50 " Thanks for playing!" in
+
+  let score_message =
+    W.label ~size:30 ("Final score: " ^ string_of_int !score)
+  in
+
   let page1 = L.tower [ layout ] in
 
   let page2 = L.tower [ input_word_field; game_board; enter_button_flat ] in
 
   let page3 =
-    let message = W.label ~size:50 " Thanks for playing!" in
-    let score_message =
-      W.label ~size:30 ("Final score: " ^ string_of_int !score)
-    in
-    (* let display_wrods =  *)
     L.tower
       [
-        L.resident ~w:1000 ~h:200 message;
-        L.resident ~w:1000 ~h:200 score_message;
+        L.resident ~w:1000 ~h:60 ending_message;
+        display_lists;
+        L.resident ~w:1000 ~h:50 score_message;
       ]
   in
 
