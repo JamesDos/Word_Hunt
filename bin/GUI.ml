@@ -101,11 +101,16 @@ let main () =
     | _ -> 2500
   in
 
+  let score_message =
+    W.label ~size:30 ("Final score: " ^ string_of_int !score)
+  in
+
   (*[update_score word] mutates [score] and updates the score based off of the score
      of [word] determiend by score_word*)
   let update_score word =
     if String.length word > 2 then score := !score + score_word word;
-    W.set_text score_board (string_of_int !score)
+    W.set_text score_board (string_of_int !score);
+    W.set_text score_message ("Final score: " ^ string_of_int !score)
   in
 
   (*[is_valid_tile loc] returns whether the tile at location [loc] is valid.
@@ -183,9 +188,23 @@ let main () =
     L.make_clip ~h:300 contents
   in
 
+  let convert_str_lst_to_str str_lst =
+    let formatted_lines =
+      List.mapi (fun i s -> Printf.sprintf "%d. %s" (i + 1) s) str_lst
+    in
+    String.concat "\n" formatted_lines
+  in
+
+  let top_user_words = !entered_words in
+
+  let top_user_words_display =
+    W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_user_words)
+  in
+
   let update_used_words_field lst =
     let text = String.concat "\n" lst in
-    W.set_text used_words_field text
+    W.set_text used_words_field text;
+    W.set_text top_user_words_display text
   in
 
   let reset_tiles matrix =
@@ -255,26 +274,13 @@ let main () =
   in
 
   (*TODO: Make lists for all user inputted words and longest words that could have been made*)
-  let convert_str_lst_to_str str_lst =
-    let formatted_lines =
-      List.mapi (fun i s -> Printf.sprintf "%d. %s" (i + 1) s) str_lst
-    in
-    String.concat "\n" formatted_lines
-  in
-
   let board_solutions =
     let hashtable = Hashtbl.create 10 in
     GameBoard.solve board hashtable;
     GameBoard.solutions hashtable
   in
 
-  let top_user_words = !entered_words in
-
   let top_possible_words = GameBoard.longest_words board_solutions 20 in
-
-  let top_user_words_display =
-    W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_user_words)
-  in
 
   let top_possible_words_display =
     W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_possible_words)
@@ -325,9 +331,6 @@ let main () =
 
   let page3 =
     let message = W.label ~size:50 " Thanks for playing!" in
-    let score_message =
-      W.label ~size:30 ("Final score: " ^ string_of_int !score)
-    in
     L.tower
       [
         L.resident ~w:1000 ~h:60 message;
