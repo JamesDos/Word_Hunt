@@ -254,11 +254,6 @@ let main () =
   let widths = [ Some 100; Some 100; Some 100; Some 100 ] in*)
 
   (*let table, _ = Table.of_array ~h:400 ~widths headers a in*)
-  let action input label _ =
-    let text = W.get_text input in
-    W.set_text label ("Hello " ^ text ^ "!")
-  in
-
   let input =
     W.button
       ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
@@ -313,8 +308,9 @@ let main () =
 
   let page1 = L.tower [ layout ] in
 
+  let timer_label = W.label ~size:40 "Time Left: " in
+
   let page2_first_row =
-    let timer_label = W.label ~size:40 "Time Left: " in
     L.flat
       [
         L.resident ~w:width word_field;
@@ -339,16 +335,6 @@ let main () =
       ]
   in
 
-  let timer_label = W.label ~size:40 "60" in
-  let update_timer () =
-    let rec loop remaining_time =
-      if remaining_time >= 0 then (
-        W.set_text timer_label (string_of_int remaining_time);
-        Unix.sleep 1;
-        loop (remaining_time - 1))
-    in
-    ignore (Thread.create loop 60)
-  in
   let use_tabs = true in
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
@@ -382,10 +368,22 @@ let main () =
 
   let _ = switch_mode 0 in
 
+  let update_timer () =
+    let rec loop remaining_time =
+      if remaining_time >= 0 then (
+        W.set_text timer_label ("Time Left: " ^ string_of_int remaining_time);
+        Unix.sleep 1;
+        loop (remaining_time - 1))
+      else W.set_text timer_label "Time is up"
+    in
+    ignore (Thread.create loop 60)
+  in
+
   let start_button_action input label _ =
     let text = W.get_text input in
     W.set_text label ("Hello " ^ text ^ "!");
-    switch_mode 1
+    switch_mode 1;
+    update_timer ()
   in
 
   let c1 =
