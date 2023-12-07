@@ -252,7 +252,7 @@ let main () =
 
   let top_user_words = !entered_words in
 
-  let top_possible_words = GameBoard.longest_words board_solutions 200 in
+  let top_possible_words = GameBoard.longest_words board_solutions 20 in
 
   let top_user_words_display =
     W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_user_words)
@@ -262,12 +262,29 @@ let main () =
     W.text_display ~w:100 ~h:630 (convert_str_lst_to_str top_possible_words)
   in
 
-  let display_lists =
-    L.flat
+  let top_possible_words_title =
+    W.rich_text ~size:20 ~w:width ~h:30
+      Text_display.(page [ bold (para "Longest Possibe Words") ])
+  in
+
+  let top_user_words_title =
+    W.rich_text ~size:20 ~w:width ~h:30
+      Text_display.(page [ bold (para "Your Words") ])
+  in
+
+  let top_words_list =
+    L.tower
       [
-        L.resident top_user_words_display; L.resident top_possible_words_display;
+        L.resident top_possible_words_title;
+        L.resident top_possible_words_display;
       ]
   in
+
+  let user_words_list =
+    L.tower
+      [ L.resident top_user_words_title; L.resident top_user_words_display ]
+  in
+  let display_lists = L.flat [ top_words_list; user_words_list ] in
 
   let ending_message = W.label ~size:50 " Thanks for playing!" in
 
@@ -275,12 +292,19 @@ let main () =
     W.label ~size:30 ("Final score: " ^ string_of_int !score)
   in
 
-  let page1 = L.tower [ layout ] in
+  let page1 =
+    L.tower ~background:(Draw.(opaque (88, 245, 77)) |> L.color_bg) [ layout ]
+  in
 
-  let page2 = L.tower [ input_word_field; game_board; enter_button_flat ] in
+  let page2 =
+    L.tower
+      ~background:(Draw.(opaque (88, 245, 77)) |> L.color_bg)
+      [ input_word_field; game_board; enter_button_flat ]
+  in
 
   let page3 =
     L.tower
+      ~background:(Draw.(opaque (88, 245, 77)) |> L.color_bg)
       [
         L.resident ~w:1000 ~h:60 ending_message;
         display_lists;

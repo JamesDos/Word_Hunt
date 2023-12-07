@@ -305,7 +305,7 @@ let () =
 (**[test_make_word] is a helper function to test Builder.make_word*)
 let test_make_word name expected_output lst board =
   name >:: fun _ ->
-  assert_equal expected_output
+  assert_equal ~printer:pp_string expected_output
     (Test_BuildBoard.make_word (loc_list_of_list lst []) board)
 
 (**[test_is_valid_words] is a helper function to test Builder.is_valid_word*)
@@ -319,7 +319,8 @@ let test_solve name expected_output input =
   name >:: fun _ ->
   let hashtable = Hashtbl.create 10 in
   Test_BuildBoard.solve input hashtable;
-  assert_equal ~printer:(pp_list pp_string) expected_output
+  assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_string)
+    expected_output
     (Test_BuildBoard.longest_words (Test_BuildBoard.solutions hashtable) 10)
 
 let board_tests =
@@ -365,11 +366,12 @@ let board_tests =
       [ (0, 1); (0, 0); (0, 2) ]
       test_board1;
     test_make_word "make word DDA; board with multiple of the same letters"
-      "DDA"
+      "DDAA"
       [ (0, 3); (2, 2); (3, 2); (0, 1) ]
       test_board1;
-    test_make_word "make word DDA; board with multiple of the same letters"
-      "DDA; different order"
+    test_make_word
+      "make word DDA; board with multiple of the same letters; different order"
+      "DDAA"
       [ (2, 2); (0, 3); (0, 1); (3, 2) ]
       test_board1;
     (*is_valid_word tests*)
@@ -459,6 +461,6 @@ let board_tests =
 
 let suite =
   "test suite for builder.ml"
-  >::: List.flatten [ points_tests; trie_tests (*board_tests*) ]
+  >::: List.flatten [ points_tests; trie_tests; board_tests ]
 
 let () = run_test_tt_main suite
