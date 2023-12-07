@@ -170,6 +170,24 @@ let main () =
     L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
   in
 
+  let used_words_field = W.text_display "" in
+
+  let used_words_layout =
+    let contents = L.resident used_words_field in
+    L.make_clip ~h:300 contents
+  in
+
+  let update_used_words_field lst =
+    let text = String.concat "\n" lst in
+    W.set_text used_words_field text
+  in
+
+  let page2_first_row =
+    L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
+  in
+
+  let page2_second_row = L.flat [ game_board; used_words_layout ] in
+
   let reset_tiles matrix =
     for i = 0 to 3 do
       for j = 0 to 3 do
@@ -181,8 +199,9 @@ let main () =
   let reset_text_field m =
     let field_word = W.get_text word_field in
     if
-      (not (GameBoard.is_valid_word (List.rev !entered_locs) board))
-      || List.mem field_word !entered_words
+      true (* set to false to always accept every word *)
+      && ((not (GameBoard.is_valid_word (List.rev !entered_locs) board))
+         || List.mem field_word !entered_words)
     then (
       print_endline "not a valid word";
       print_endline (GameBoard.make_word (List.rev !entered_locs) board))
@@ -190,8 +209,9 @@ let main () =
       print_endline "is a valid word";
       add_word field_word;
       update_score field_word;
-      W.set_text word_field "";
-      reset_tiles m)
+      update_used_words_field (List.rev !entered_words));
+    W.set_text word_field "";
+    reset_tiles m
   in
 
   let enter_button =
@@ -224,7 +244,7 @@ let main () =
     W.button
       ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
       ~bg_on:(Draw.(opaque red) |> Style.color_bg)
-      ~kind:Button.Switch "A"
+      ~kind:Button.Switch "Play"
   in
 
   (*let input = W.text_input ~max_size:200 ~prompt:"Enter your name" () in*)
@@ -277,7 +297,9 @@ let main () =
 
   let page1 = L.tower [ layout ] in
 
-  let page2 = L.tower [ input_word_field; game_board; enter_button_flat ] in
+  let page2 =
+    L.tower [ page2_first_row; page2_second_row; enter_button_flat ]
+  in
 
   let page3 =
     L.tower
@@ -299,13 +321,52 @@ let main () =
     ignore (Thread.create loop 60)
   in
 
+  let use_tabs = false in
+
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
-    Tabs.create ~slide:Avar.Right
-      [ ("Page 1", page1); ("Page 2", page2); ("Page 3", page3) ]
+    if use_tabs then
+      Tabs.create ~slide:Avar.Right
+        [ ("Page 1", page1); ("Page 2", page2); ("Page 3", page3) ]
+    else L.superpose [ page1; page2; page3 ]
   in
+
+  (* Useful *)
+  (* print_endline (Print.layout_down tabs); *)
+
+  (* zero-based *)
+  let switch_mode n =
+    if use_tabs then ()
+      (* TODO: make this less fragile *)
+      (*
+             let top_rooms = L.get_rooms tabs in
+             match L.get_rooms (List.hd top_rooms) with
+             | [ t1; t2; t3 ] ->
+                 L.set_show t1 (n = 0);
+                 L.set_show t2 (n = 1);
+                 L.set_show t3 (n = 2)
+             | _ -> failwith "Unexpected layout in switch_tab!" *)
+    else (
+      print_endline ("switch_mode: " ^ string_of_int n);
+      L.set_show page1 (n = 0);
+      L.set_show page2 (n = 1);
+      L.set_show page3 (n = 2))
+  in
+
+  let _ = switch_mode 0 in
+
+  let start_button_action input label _ =
+    let text = W.get_text input in
+    W.set_text label ("Hello " ^ text ^ "!");
+    switch_mode 1
+  in
+
+  let c1 =
+    W.connect input label start_button_action Sdl.Event.[ mouse_button_down ]
+  in
+
   (*let layout = L.tower [ L.resident (W.label "Word Hunt"); table ] in*)
-  let board = Bogue.of_layout ~connections:[ c ] tabs in
+  let board = Bogue.of_layout ~connections:[ c1 ] tabs in
   Bogue.run board
 
 let () =
