@@ -164,7 +164,13 @@ let main () =
   let game_board = L.tower board_array in
 
   let input_word_field =
-    L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
+    let score = W.label ~size:40 "Score:" in
+    L.flat
+      [
+        L.resident ~w:width word_field;
+        L.resident ~w:140 ~h:40 score;
+        L.resident ~w:200 score_board;
+      ]
   in
 
   let reset_tiles matrix =
@@ -196,7 +202,7 @@ let main () =
     W.button ~action ~kind:Button.Trigger "Enter Word"
   in
 
-  let enter_button_flat = L.flat [ L.resident ~w:width enter_button ] in
+  let enter_button_flat = L.flat [ L.resident ~w:300 enter_button ] in
 
   (*
   let input_word = W.label ~size:40 "" in
@@ -233,10 +239,25 @@ let main () =
 
   let page1 = L.tower [ layout ] in
 
-  let page2 = L.tower [ input_word_field; game_board; enter_button_flat ] in
+  let page2 =
+    let timer_label = W.label ~size:40 "60" in
+    let time_left = W.label ~size:40 "Time Left:" in
+    L.tower
+      [
+        input_word_field;
+        L.flat
+          [
+            game_board;
+            L.resident ~w:100 ~h:40 time_left;
+            L.resident ~w:100 ~h:40 timer_label;
+          ];
+        enter_button_flat;
+      ]
+  in
 
   let page3 =
     let message = W.label ~size:50 " Thanks for playing!" in
+
     let score_message =
       W.label ~size:30 ("Final score: " ^ string_of_int !score)
     in
@@ -246,17 +267,6 @@ let main () =
         L.resident ~w:1000 ~h:200 message;
         L.resident ~w:1000 ~h:200 score_message;
       ]
-  in
-
-  let timer_label = W.label ~size:40 "60" in
-  let update_timer () =
-    let rec loop remaining_time =
-      if remaining_time >= 0 then (
-        W.set_text timer_label (string_of_int remaining_time);
-        Unix.sleep 1;
-        loop (remaining_time - 1))
-    in
-    ignore (Thread.create loop 60)
   in
 
   (*let page2 = L.tower [ layout ] in*)

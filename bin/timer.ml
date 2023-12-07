@@ -10,9 +10,7 @@ let countdown n =
     else print_endline "Time's up!"
   in
 
-  print_endline "Before creating thread";
   let countdown_thread = Thread.create loop n in
-  Thread.join countdown_thread;
-  print_endline "After creating thread"
+  Thread.join countdown_thread
 
 let () = countdown 5
