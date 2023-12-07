@@ -85,11 +85,21 @@ let main () =
     [word] is not a member of [entered_words]*)
   let add_word word = entered_words := word :: !entered_words in
 
-  let score_board = W.label ~size:40 (string_of_int !score) in
+  let score_board = W.label ~size:40 ("Score: " ^ string_of_int !score) in
 
   (*[score_word word] gives [word] an int score based on its length, according to the
      scoring rules of word hunt. Requires that the length of [word] > 2*)
-  let score_word word = 400 * (String.length word - 2) in
+  let score_word word =
+    let score = String.length word in
+    match score with
+    | 1 | 2 -> 0
+    | 3 -> 100
+    | 4 -> 400
+    | 5 -> 800
+    | 6 -> 1400
+    | 7 -> 1800
+    | _ -> 2500
+  in
 
   (*[update_score word] mutates [score] and updates the score based off of the score
      of [word] determiend by score_word*)
@@ -163,11 +173,7 @@ let main () =
   let board_array = [ board_row1; board_row2; board_row3; board_row4 ] in
 
   let game_board =
-    L.tower ~hmargin:(width / 2) ~align:Draw.Center board_array
-  in
-
-  let input_word_field =
-    L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
+    L.tower ~hmargin:(width / 3) ~align:Draw.Center board_array
   in
 
   let used_words_field = W.text_display "" in
@@ -181,12 +187,6 @@ let main () =
     let text = String.concat "\n" lst in
     W.set_text used_words_field text
   in
-
-  let page2_first_row =
-    L.flat [ L.resident ~w:width word_field; L.resident ~w:width score_board ]
-  in
-
-  let page2_second_row = L.flat [ game_board; used_words_layout ] in
 
   let reset_tiles matrix =
     for i = 0 to 3 do
@@ -250,8 +250,6 @@ let main () =
   (*let input = W.text_input ~max_size:200 ~prompt:"Enter your name" () in*)
   let label = W.label ~size:40 "Hello!" in
 
-  let c = W.connect input label action Sdl.Event.[ mouse_button_down ] in
-
   let layout =
     L.tower [ L.resident ~w:400 input; L.resident ~w:400 ~h:200 label ]
   in
@@ -300,30 +298,39 @@ let main () =
       ]
   in
 
-  let user_words_list =
+  let top_user_word_list =
     L.tower
       [ L.resident top_user_words_title; L.resident top_user_words_display ]
   in
-  let display_lists = L.flat [ top_words_list; user_words_list ] in
 
-  let ending_message = W.label ~size:50 " Thanks for playing!" in
+  let display_lists = L.flat [ top_words_list; top_user_word_list ] in
 
-  let score_message =
-    W.label ~size:30 ("Final score: " ^ string_of_int !score)
+  let page1 = L.tower [ layout ] in
+
+  let page2_first_row =
+    let timer_label = W.label ~size:40 "Time Left: " in
+    L.flat
+      [
+        L.resident ~w:width word_field;
+        L.resident ~w:250 score_board;
+        L.resident ~w:220 timer_label;
+      ]
   in
 
-  let page1 =
-    L.tower ~background:(Draw.(opaque (88, 245, 77)) |> L.color_bg) [ layout ]
-  in
+  let page2_second_row = L.flat [ game_board; used_words_layout ] in
 
   let page2 =
     L.tower [ page2_first_row; page2_second_row; enter_button_flat ]
   in
 
   let page3 =
+    let message = W.label ~size:50 " Thanks for playing!" in
+    let score_message =
+      W.label ~size:30 ("Final score: " ^ string_of_int !score)
+    in
     L.tower
       [
-        L.resident ~w:1000 ~h:60 ending_message;
+        L.resident ~w:1000 ~h:60 message;
         display_lists;
         L.resident ~w:1000 ~h:50 score_message;
       ]
@@ -339,9 +346,7 @@ let main () =
     in
     ignore (Thread.create loop 60)
   in
-
-  let use_tabs = false in
-
+  let use_tabs = true in
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
     if use_tabs then
