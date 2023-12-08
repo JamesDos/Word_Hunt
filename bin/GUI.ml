@@ -184,7 +184,7 @@ let main () =
   let used_words_field = W.text_display "" in
 
   let used_words_layout =
-    let contents = L.resident used_words_field in
+    let contents = L.resident ~h:1000 used_words_field in
     L.make_clip ~h:300 contents
   in
 
