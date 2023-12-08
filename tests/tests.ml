@@ -243,23 +243,7 @@ let test_board1 =
 
 (*board with no solutions*)
 let test_board2 =
-  let start = Array.make_matrix 4 4 "x" in
-  start.(0).(0) <- "@";
-  start.(0).(1) <- "@";
-  start.(0).(2) <- "@";
-  start.(0).(3) <- "@";
-  start.(1).(0) <- "@";
-  start.(1).(1) <- "@";
-  start.(1).(2) <- "@";
-  start.(1).(3) <- "@";
-  start.(2).(0) <- "@";
-  start.(2).(1) <- "@";
-  start.(2).(2) <- "@";
-  start.(2).(3) <- "@";
-  start.(3).(0) <- "@";
-  start.(3).(1) <- "@";
-  start.(3).(2) <- "@";
-  start.(3).(3) <- "@";
+  let start = Array.make_matrix 4 4 "@" in
   start
 
 (*board with multiple words from same path*)
@@ -293,13 +277,15 @@ let mini_board =
   start.(1).(1) <- "E";
   start
 
-let empty_hashtable = Hashtbl.create 10
-let () = Test_BuildBoard.solve test_board1 empty_hashtable
+let mega_board = Array.make_matrix 5 5 "x"
 
-(*let () = Test_BuildBoard.traverse mini_board 0 0 "" [] empty_hashtable*)
-let () = Test_BuildBoard.print_board test_board1
-
-let () =
+(*prints board [b] and its solutions*)
+let print_board_solutions b =
+  let empty_hashtable = Hashtbl.create 10 in
+  let () =
+    Test_BuildBoard.solve b empty_hashtable;
+    Test_BuildBoard.print_board b
+  in
   print_endline (pp_list pp_string (Test_BuildBoard.solutions empty_hashtable))
 
 (**[test_make_word] is a helper function to test Builder.make_word*)
@@ -379,14 +365,23 @@ let board_tests =
     test_is_valid_word "is_valid_word 'A' test_board1" false
       [ (0, 1) ]
       test_board1;
-    test_is_valid_word "is_valid_word 'A' test_board1" false
-      [ (0, 1) ]
+    test_is_valid_word
+      "is_valid_word; multiple same locations for non accpeting word \
+       test_board1"
+      false
+      [ (0, 1); (0, 1) ]
       test_board1;
     test_is_valid_word "is_valid_word 'AT' test_board1" false
       [ (0, 1); (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CAT' test_board1" true
       [ (0, 0); (0, 1); (0, 2) ]
+      test_board1;
+    test_is_valid_word
+      "is_valid_word 'CAT' multiple same locations for accpeting word; \
+       test_board1"
+      true
+      [ (0, 0); (0, 1); (0, 2); (0, 0); (0, 1); (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CTS' test_board1" false
       [ (0, 0); (0, 2); (3, 3) ]

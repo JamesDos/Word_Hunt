@@ -14,6 +14,7 @@ let reset_board () =
   let module New_board = Builder.BuildBoard in
   New_board.board
 
+(*used for debugging*)
 let pp_list pp_elt lst =
   let pp_elts lst =
     let rec loop n acc = function
@@ -32,16 +33,22 @@ let pp_tuple (s : GameBoard.location) =
   | Loc (x, y) -> "\"" ^ string_of_int x ^ " " ^ string_of_int y ^ "\""
 
 let main () =
-  let width = 400 in
-  (*[score] keeps track of the players current score *)
-  let score = ref 0 in
-  let word_field = W.label ~size:40 "" in
-
-  (*entered_word_locs an array tracking the locations of letters that the user has
-    inputted in the order that they were inputed*)
-  let entered_locs = ref [] in
-
+  (*useful functions*)
   let array_of_list lst = Array.of_list (List.rev !lst) in
+  let convert_str_lst_to_str str_lst =
+    let formatted_lines =
+      List.mapi (fun i s -> Printf.sprintf "%d. %s" (i + 1) s) str_lst
+    in
+    String.concat "\n" formatted_lines
+  in
+
+  let width = 400 in
+
+  (*variables to keep track of score, entered locations, entered words and
+    their functions*)
+  let score = ref 0 in
+
+  let entered_locs = ref [] in
 
   (*[add_loc loc] mutates [entered_words_locs] by appending location [loc] to it*)
   let add_loc (loc : GameBoard.location) =
@@ -49,7 +56,7 @@ let main () =
   in
 
   (*[remove_loc _] mutates [entered_words_locs] by removing its last location.
-     Requires that [entered_words_locs] is nonempty*)
+    Requires that [entered_words_locs] is nonempty*)
   let remove_loc _ =
     let new_locs =
       if List.length !entered_locs < 1 then !entered_locs
@@ -57,6 +64,34 @@ let main () =
     in
     entered_locs := new_locs
   in
+
+  (*[entered_words] is an array of the valid words entered by the player*)
+  let entered_words = ref [] in
+
+  (*[add_word word] mutates [entered_words] by appending [word] to it. Requires
+    [word] is not a member of [entered_words]*)
+  let add_word word = entered_words := word :: !entered_words in
+
+  (*Page 1 ********************************************************************)
+  let input =
+    W.button
+      ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
+      ~bg_on:(Draw.(opaque red) |> Style.color_bg)
+      ~kind:Button.Switch "Play"
+  in
+
+  (*let input = W.text_input ~max_size:200 ~prompt:"Enter your name" () in*)
+  let label = W.label ~size:20 "Welcome to Word Hunt!" in
+
+  let layout =
+    L.tower ~hmargin:700
+      [ L.resident ~w:400 ~h:200 label; L.resident ~w:400 ~h:50 input ]
+  in
+
+  let page1 = L.tower [ layout ] in
+
+  (*Page 2 ********************************************************************)
+  let word_field = W.label ~size:40 "" in
 
   (*[board_matrix] is a 2d array storing each tiles of [board]*)
   let board_matrix = Array.make_matrix 4 4 (W.button "") in
@@ -81,13 +116,6 @@ let main () =
     in
     W.set_text word_field new_text
   in
-
-  (*[entered_words] is an array of the valid words entered by the player*)
-  let entered_words = ref [] in
-
-  (*[add_word word] mutates [entered_words] by appending [word] to it. Requires
-    [word] is not a member of [entered_words]*)
-  let add_word word = entered_words := word :: !entered_words in
 
   let score_board = W.label ~size:40 ("Score: " ^ string_of_int !score) in
 
@@ -192,13 +220,6 @@ let main () =
     L.make_clip ~h:300 contents
   in
 
-  let convert_str_lst_to_str str_lst =
-    let formatted_lines =
-      List.mapi (fun i s -> Printf.sprintf "%d. %s" (i + 1) s) str_lst
-    in
-    String.concat "\n" formatted_lines
-  in
-
   let top_user_words = !entered_words in
 
   let top_user_words_display =
@@ -246,33 +267,24 @@ let main () =
     L.flat ~margins:100 [ L.resident ~w:(width * 2) enter_button ]
   in
 
-  (*
-  let input_word = W.label ~size:40 "" in
-  let update_word_action = W.map_text (fun s -> s) in
-  let c_input = W.connect input_word button update_word_action in
-  Sdl.Event[text_input; mouse_button_down] *)
+  let timer_label = W.label ~size:40 "Time Left: " in
 
-  (*
-  let a = board in
-  let headers = [ "Column 1"; "Column 2"; "Column 3"; "Column 4" ] in
-  let widths = [ Some 100; Some 100; Some 100; Some 100 ] in*)
-
-  (*let table, _ = Table.of_array ~h:400 ~widths headers a in*)
-  let input =
-    W.button
-      ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
-      ~bg_on:(Draw.(opaque red) |> Style.color_bg)
-      ~kind:Button.Switch "Play"
+  let page2_first_row =
+    L.flat ~hmargin:50
+      [
+        L.resident ~w:width word_field;
+        L.resident ~w:250 score_board;
+        L.resident ~w:300 ~h:50 timer_label;
+      ]
   in
 
-  (*let input = W.text_input ~max_size:200 ~prompt:"Enter your name" () in*)
-  let label = W.label ~size:40 "Hello!" in
+  let page2_second_row = L.flat [ game_board; used_words_layout ] in
 
-  let layout =
-    L.tower [ L.resident ~w:400 input; L.resident ~w:400 ~h:200 label ]
+  let page2 =
+    L.tower [ page2_first_row; page2_second_row; enter_button_flat ]
   in
 
-  (*TODO: Make lists for all user inputted words and longest words that could have been made*)
+  (*Page 3 *********************************************************************)
   let board_solutions =
     let hashtable = Hashtbl.create 10 in
     GameBoard.solve board hashtable;
@@ -312,35 +324,24 @@ let main () =
     L.flat ~hmargin:200 [ top_words_list; top_user_word_list ]
   in
 
-  let page1 = L.tower [ layout ] in
-
-  let timer_label = W.label ~size:40 "Time Left: " in
-
-  let page2_first_row =
-    L.flat ~hmargin:50
-      [
-        L.resident ~w:width word_field;
-        L.resident ~w:250 score_board;
-        L.resident ~w:300 ~h:50 timer_label;
-      ]
-  in
-
-  let page2_second_row = L.flat [ game_board; used_words_layout ] in
-
-  let page2 =
-    L.tower [ page2_first_row; page2_second_row; enter_button_flat ]
+  let back_to_page2_button =
+    let action b = L.set_show page2 true in
+    W.button ~action "Back to Board"
   in
 
   let page3 =
     let message = W.label ~size:50 " Thanks for playing!" in
+
     L.tower
       [
         L.resident ~w:1000 ~h:70 message;
         display_lists;
+        L.resident ~w:750 ~h:50 back_to_page2_button;
         L.resident ~w:1000 ~h:50 score_message;
       ]
   in
 
+  (* extra stuff ***************************************************************)
   let use_tabs = true in
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
@@ -383,9 +384,11 @@ let main () =
         loop (remaining_time - 1))
       else (
         W.set_text timer_label "Time is up";
-        W.update timer_label)
+        W.update timer_label;
+        switch_mode 2)
     in
-    ignore (Thread.create loop 60)
+
+    ignore (Thread.create loop 5)
   in
 
   let start_button_action input label _ =

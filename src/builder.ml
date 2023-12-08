@@ -76,6 +76,7 @@ module BuildBoard = struct
       print_newline ()
     done
 
+  (*
   (** Determines if [point] is a corner tile of the board*)
   let is_corner point =
     point = (0, 0) || point = (0, 3) || point = (3, 0) || point = (3, 3)
@@ -90,7 +91,7 @@ module BuildBoard = struct
         | x, y ->
             if x = 0 || x = 3 then y = 1 || y = 2
             else if x = 1 || x = 2 then y = 0 || y = 3
-            else false)
+            else false)*)
 
   (** Helper function used by valid_moves. 
   Given a point (i, j), returns a list of all 8 surrounding points*)
@@ -117,6 +118,7 @@ module BuildBoard = struct
       [point]*)
   let valid_moves point = List.filter is_valid_pos (possible_moves point)
 
+  (*
   (** Given a character [x], finds the locations in [board] that has that 
       character. char_loc x board is a list of tuples *)
   let find_chars x board =
@@ -128,7 +130,7 @@ module BuildBoard = struct
         find_chars_helper x board i (j + 1) ((i, j) :: acc)
       else find_chars_helper x board i (j + 1) acc
     in
-    find_chars_helper x board 0 0 []
+    find_chars_helper x board 0 0 []*)
 
   (** Given a starting location [start], returns whether [next] is a valid
     next tile determined by valid_moves*)
