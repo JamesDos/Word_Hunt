@@ -373,8 +373,11 @@ let main () =
       if remaining_time >= 0 then (
         W.set_text timer_label ("Time Left: " ^ string_of_int remaining_time);
         Unix.sleep 1;
+        W.update timer_label;
         loop (remaining_time - 1))
-      else W.set_text timer_label "Time is up"
+      else (
+        W.set_text timer_label "Time is up";
+        W.update timer_label)
     in
     ignore (Thread.create loop 60)
   in
