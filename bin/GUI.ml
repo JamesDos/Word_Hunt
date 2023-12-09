@@ -399,7 +399,7 @@ let main () =
     W.connect input label start_button_action Sdl.Event.[ mouse_button_down ]
   in
 
-  let back_to_page2_action _ _ _ = switch_mode 1 in
+  let back_to_page2_action _ _ _ = switch_mode 0 in
 
   let c2 =
     W.connect back_to_page2_button back_to_page2_button back_to_page2_action
