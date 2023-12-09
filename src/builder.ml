@@ -64,6 +64,10 @@ module BuildBoard = struct
 
   let game_board = fill_board board
 
+  let new_board () =
+    let b = Array.make_matrix 4 4 "a" in
+    fill_board b
+
   (**print_board prints the matrix [array_2d]*)
   let print_board array_2d =
     let rows = Array.length array_2d in
