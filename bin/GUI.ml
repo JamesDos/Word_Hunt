@@ -50,6 +50,15 @@ let main () =
 
   let entered_locs = ref [] in
 
+  (*first element of has_entered_word is if the user has entered a valid word,
+    second element of has entered_word is if the state of the first element has
+    been toggled previously by the enter button or timer. If the state has been
+    toggled by the enter button then snd !has_entered_word is false, otherwise
+    its true. Third element is how much extra time user should get if they input
+    a valid word)
+  *)
+  let has_entered_word = ref (false, false, 0) in
+
   (*[add_loc loc] mutates [entered_words_locs] by appending location [loc] to it*)
   let add_loc (loc : GameBoard.location) =
     entered_locs := loc :: !entered_locs
@@ -72,23 +81,46 @@ let main () =
     [word] is not a member of [entered_words]*)
   let add_word word = entered_words := word :: !entered_words in
 
+  let toggle_has_entered_word_enter n = has_entered_word := (true, false, n) in
+
+  let toggle_has_entered_word_timer () = has_entered_word := (false, true, 0) in
+
+  let calculate_extra_time word =
+    match String.length word with
+    | 0 | 1 | 2 -> 0
+    | 3 -> 5
+    | 4 -> 7
+    | 5 -> 12
+    | 6 -> 20
+    | _ -> 30
+  in
+
   (*Page 1 ********************************************************************)
-  let input =
+  let start_normal_button =
     W.button
       ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
       ~bg_on:(Draw.(opaque red) |> Style.color_bg)
       ~kind:Button.Switch "Play"
   in
 
-  (*let input = W.text_input ~max_size:200 ~prompt:"Enter your name" () in*)
-  let label = W.label ~size:20 "Welcome to Word Hunt!" in
-
-  let layout =
-    L.tower ~hmargin:700
-      [ L.resident ~w:400 ~h:200 label; L.resident ~w:400 ~h:50 input ]
+  let start_survival_button =
+    W.button
+      ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
+      ~bg_on:(Draw.(opaque red) |> Style.color_bg)
+      ~kind:Button.Switch "Play Survival Mode"
   in
 
-  let page1 = L.tower [ layout ] in
+  (*let input = W.text_input ~max_size:200 ~prompt:"Enter your name" () in*)
+  let welcome_label = W.label ~size:20 "Welcome to Word Hunt!" in
+
+  let page1 =
+    L.tower ~hmargin:500
+      [
+        L.resident ~w:500 ~h:200 welcome_label;
+        L.resident ~w:500 ~h:50 start_normal_button;
+        L.resident ~w:500 ~h:50 start_survival_button;
+      ]
+  in
 
   (*Page 2 ********************************************************************)
   let word_field = W.label ~size:40 "" in
@@ -96,10 +128,11 @@ let main () =
   (*[board_matrix] is a 2d array storing each tiles of [board]*)
   let board_matrix = Array.make_matrix 4 4 (W.button "", W.label "") in
 
+  (*
   (*[get_button loc] gets the button at location [loc] in [board_matrix]*)
   let get_button loc =
     match loc with GameBoard.Loc (i, j) -> board_matrix.(i).(j)
-  in
+  in *)
 
   (* [add_letter l] appends [l] to [word_field]'s text and sets this string as
       its new text*)
@@ -124,7 +157,7 @@ let main () =
   let score_word word =
     let score = String.length word in
     match score with
-    | 1 | 2 -> 0
+    | 0 | 1 | 2 -> 0
     | 3 -> 100
     | 4 -> 400
     | 5 -> 800
@@ -222,9 +255,18 @@ let main () =
 
   let used_words_field = W.text_display "" in
 
+  let used_words_display =
+    W.rich_text ~size:20 ~w:width ~h:30
+      Text_display.(page [ bold (para "Your Words") ])
+  in
+
   let used_words_layout =
     let contents = L.resident ~h:1000 used_words_field in
     L.make_clip ~h:300 contents
+  in
+
+  let used_words_tower =
+    L.tower [ L.resident used_words_display; used_words_layout ]
   in
 
   let top_user_words = !entered_words in
@@ -248,6 +290,7 @@ let main () =
       done
     done
   in
+
   let reset_text_field m =
     let field_word = W.get_text word_field in
     if
@@ -262,6 +305,7 @@ let main () =
       add_word field_word;
       update_score field_word;
       update_used_words_field (List.rev !entered_words));
+    toggle_has_entered_word_enter (calculate_extra_time field_word);
     W.set_text word_field "";
     reset_tiles m
   in
@@ -333,13 +377,13 @@ let main () =
   let page2_first_row =
     L.flat ~hmargin:50
       [
-        L.resident ~w:width word_field;
-        L.resident ~w:250 score_board;
-        L.resident ~w:300 ~h:50 timer_label;
+        L.resident ~w:width ~h:60 word_field;
+        L.resident ~w:250 ~h:60 score_board;
+        L.resident ~w:300 ~h:60 timer_label;
       ]
   in
 
-  let page2_second_row = L.flat [ game_board; used_words_layout ] in
+  let page2_second_row = L.flat [ game_board; used_words_tower ] in
 
   let page2 =
     L.tower
@@ -398,7 +442,7 @@ let main () =
   in
 
   (* extra stuff ***************************************************************)
-  let use_tabs = true in
+  let use_tabs = false in
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
     if use_tabs then
@@ -431,7 +475,7 @@ let main () =
 
   let _ = switch_mode 0 in
 
-  let update_timer () =
+  let update_timer_normal n =
     let rec loop remaining_time =
       if remaining_time >= 0 then (
         W.set_text timer_label ("Time Left: " ^ string_of_int remaining_time);
@@ -443,37 +487,64 @@ let main () =
         W.update timer_label;
         switch_mode 2)
     in
-
-    ignore (Thread.create loop 5)
+    ignore (Thread.create loop n)
   in
 
-  let start_button_action input label _ =
-    let text = W.get_text input in
-    W.set_text label ("Hello " ^ text ^ "!");
+  let update_timer_survival n =
+    let rec loop remaining_time =
+      if remaining_time >= 0 then (
+        match !has_entered_word with
+        | true, false, n ->
+            toggle_has_entered_word_timer ();
+            let new_remaining_time = remaining_time + n in
+            W.set_text timer_label
+              ("Time Left: " ^ string_of_int (new_remaining_time + n));
+            W.update timer_label;
+            Unix.sleep 1;
+            loop (new_remaining_time - 1)
+        | _ ->
+            W.set_text timer_label ("Time Left: " ^ string_of_int remaining_time);
+            W.update timer_label;
+            Unix.sleep 1;
+            loop (remaining_time - 1))
+      else (
+        W.set_text timer_label "Time is up";
+        W.update timer_label;
+        switch_mode 2)
+    in
+    ignore (Thread.create loop n)
+  in
+
+  let start_button_normal_action input label _ =
     switch_mode 1;
-    update_timer ()
+    update_timer_normal 60
+  in
+
+  let start_button_survival_action input label _ =
+    switch_mode 1;
+    update_timer_survival 20
   in
 
   let c1 =
-    W.connect input label start_button_action Sdl.Event.[ mouse_button_down ]
+    W.connect start_normal_button welcome_label start_button_normal_action
+      Sdl.Event.[ mouse_button_down ]
+  in
+
+  let c2 =
+    W.connect start_survival_button welcome_label start_button_survival_action
+      Sdl.Event.[ mouse_button_down ]
   in
 
   let back_to_page2_action _ _ _ = switch_mode 0 in
 
-  let c2 =
+  let c3 =
     W.connect back_to_page2_button back_to_page2_button back_to_page2_action
       Sdl.Event.[ mouse_button_down ]
   in
 
-  (*let layout = L.tower [ L.resident (W.label "Word Hunt"); table ] in*)
-  let board = Bogue.of_layout ~connections:[ c1; c2 ] tabs in
+  let board = Bogue.of_layout ~connections:[ c1; c2; c3 ] tabs in
   Bogue.run board
 
 let () =
   main ();
   Bogue.quit ()
-
-(* let timer =
-   Thread.create (fun () ->
-       Unix.sleep 60;
-       Tabs.goto_page tabs 2) *)
