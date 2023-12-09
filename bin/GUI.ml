@@ -399,6 +399,8 @@ let main () =
     board := GameBoard.new_board ();
     reset_tiles board_matrix;
     W.set_text word_field "";
+    entered_words := [];
+    update_used_words_field !entered_words;
     (* set_score 0; *)
     relabel_tiles !board;
     update_solutions ()
@@ -570,7 +572,7 @@ let main () =
   let start_button_normal_action input label _ =
     start_game ();
     switch_page Game;
-    update_timer_normal 2
+    update_timer_normal 60
   in
 
   let start_button_survival_action input label _ =
