@@ -245,17 +245,17 @@
 
   (**[search_word node word] returns whether [word] is a present in the trie [node]*)
   let rec search_word node word =
-    <span data-count="206576376">m</span>atch word with
-    | <span data-count="3145">[</span>] -&gt; node.is_end_of_word
-    | <span data-count="206573231">h</span>d :: tl -&gt; (
+    <span data-count="80608578">m</span>atch word with
+    | <span data-count="856">[</span>] -&gt; node.is_end_of_word
+    | <span data-count="80607722">h</span>d :: tl -&gt; (
         try
           let next_node = Hashtbl.find node.children hd in
-          <span data-count="134398510">s</span>earch_wor<span data-count="134398510">d</span> next_node tl
-        with <span data-count="72174721">N</span>ot_found -&gt; false)
+          <span data-count="44519632">s</span>earch_wor<span data-count="44519632">d</span> next_node tl
+        with <span data-count="36088090">N</span>ot_found -&gt; false)
 
   (** [to_char_list word] is a list of characters of [word] in their original order.
       Example: to_char_list cat is ['c'; 'a'; 't'] *)
-  let to_char_list word = <span data-count="73016369">L</span>ist.of_seq (String.to_se<span data-count="73016369">q</span> word)
+  let to_char_list word = <span data-count="36927449">L</span>ist.of_seq (String.to_se<span data-count="36927449">q</span> word)
 
   (**[insert_list_of_words node words] inserts each word in string list [words] 
       into trie [node]*)

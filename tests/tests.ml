@@ -199,10 +199,11 @@ let test_is_word name expected_output word =
 let dict_tests =
   [
     (*is_word tests*)
-    test_is_word "is_word valid word a" true "a";
+    test_is_word "is_word valid word AB" true "AB";
+    test_is_word "is_word valid word a (lowercase)" false "ab";
     test_is_word "is_word valid word empty string" false "";
     test_is_word "is_word valid word fduafojal" false "fduafojal";
-    test_is_word "is_word valid word HIPPOPOTAMUSES" true "hippopotamuses";
+    test_is_word "is_word valid word HIPPOPOTAMUSES" true "HIPPOPOTAMUSES";
   ]
 
 let b1 = Array.make_matrix 4 4 "a"
@@ -267,7 +268,15 @@ let test_board3 =
   start.(3).(3) <- "A";
   start
 
-let () = Test_BuildBoard.print_board test_board3
+(*board with only one solution; multiple paths lead to same word*)
+let test_board4 =
+  let start = Array.make_matrix 4 4 "@" in
+  start.(0).(0) <- "A";
+  start.(0).(2) <- "A";
+  start.(1).(1) <- "C";
+  start.(2).(0) <- "A";
+  start.(2).(2) <- "T";
+  start
 
 let mini_board =
   let start = Array.make_matrix 4 4 "x" in
@@ -301,13 +310,13 @@ let test_is_valid_word name expected_output lst board =
     (Test_BuildBoard.is_valid_word (loc_list_of_list lst []) board)
 
 (**[test_solve] is a helper function to test Builder.solve*)
-let test_solve name expected_output input =
+let test_solve name expected_output input num =
   name >:: fun _ ->
   let hashtable = Hashtbl.create 10 in
   Test_BuildBoard.solve input hashtable;
   assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_string)
     expected_output
-    (Test_BuildBoard.longest_words (Test_BuildBoard.solutions hashtable) 10)
+    (Test_BuildBoard.longest_words (Test_BuildBoard.solutions hashtable) num)
 
 let board_tests =
   [
@@ -351,15 +360,27 @@ let board_tests =
     test_make_word "make word ACT test_board1" "ACT"
       [ (0, 1); (0, 0); (0, 2) ]
       test_board1;
-    test_make_word "make word DDA; board with multiple of the same letters"
+    test_make_word
+      "make word DDA; board with multiple of the same letters; test_board 1"
       "DDAA"
       [ (0, 3); (2, 2); (3, 2); (0, 1) ]
       test_board1;
     test_make_word
-      "make word DDA; board with multiple of the same letters; different order"
+      "make word DDA; board with multiple of the same letters; different \
+       order; test_board 1"
       "DDAA"
       [ (2, 2); (0, 3); (0, 1); (3, 2) ]
       test_board1;
+    test_make_word "make word @ test_board2" "@" [ (0, 1) ] test_board2;
+    test_make_word "make word CASTAWAYS test_board3" "CASTAWAYS"
+      [ (0, 0); (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (3, 3); (3, 2); (3, 1) ]
+      test_board3;
+    test_make_word "make word ACT test_board4" "ACT"
+      [ (0, 0); (1, 1); (2, 2) ]
+      test_board4;
+    test_make_word "make word CAT test_board4" "CAT"
+      [ (1, 1); (2, 0); (2, 2) ]
+      test_board4;
     (*is_valid_word tests*)
     test_is_valid_word "is_valid_word '' test_board1" false [] test_board1;
     test_is_valid_word "is_valid_word 'A' test_board1" false
@@ -380,7 +401,7 @@ let board_tests =
     test_is_valid_word
       "is_valid_word 'CAT' multiple same locations for accpeting word; \
        test_board1"
-      true
+      false
       [ (0, 0); (0, 1); (0, 2); (0, 0); (0, 1); (0, 2) ]
       test_board1;
     test_is_valid_word "is_valid_word 'CTS' test_board1" false
@@ -422,40 +443,58 @@ let board_tests =
     test_is_valid_word "is_valid_word 'CATS' test_board3" false
       [ (0, 0); (0, 1); (0, 3); (0, 2) ]
       test_board3;
+    test_is_valid_word "is_valid_word 'ACT' (0, 0); (1, 1); (2, 2) test_board4"
+      true
+      [ (0, 0); (1, 1); (2, 2) ]
+      test_board4;
+    test_is_valid_word "is_valid_word 'ACT' (2, 0); (1, 1); (2, 2) test_board4"
+      true
+      [ (2, 0); (1, 1); (2, 2) ]
+      test_board4;
+    test_is_valid_word "is_valid_word 'ACT' (0, 2); (1, 1); (2, 2) test_board4"
+      true
+      [ (0, 2); (1, 1); (2, 2) ]
+      test_board4;
+    test_is_valid_word "is_valid_word 'CAT' (1, 1); (2, 0); (2, 2) test_board4"
+      false
+      [ (1, 1); (2, 0); (2, 2) ]
+      test_board4;
     (*solve tests*)
     test_solve "Test_BuildBord.solve test_board1"
       [
         "INROADS";
-        "INROAD";
         "CORDON";
-        "CORDS";
-        "CODON";
-        "SAROD";
-        "SAROD";
+        "INROAD";
         "ACORN";
-        "TOGAS";
-        "GARNI";
+        "ADORN";
+        "ARIOT";
+        "CODAS";
+        "CODON";
+        "CORDS";
+        "CORNI";
       ]
-      test_board1;
-    test_solve "Test_BuildBord.solve test_board2" [] test_board2;
+      test_board1 10;
+    test_solve "Test_BuildBord.solve test_board2" [] test_board2 1;
     test_solve "Test_BuildBord.solve test_board3"
       [
         "CASTAWAYS";
         "CASTAWAY";
         "AWAYS";
+        "AWAY";
         "CASA";
-        "WAYS";
-        "WATS";
+        "CAST";
+        "STAW";
         "TAWA";
         "WAST";
-        "AWAY";
-        "STAW";
+        "WATS";
       ]
-      test_board3;
+      test_board3 10;
+    test_solve "Test_BuildBord.solve test_board4" [ "ACT" ] test_board4 10;
+    test_solve "Test_BuildBord.solve test_board4" [ "ACT" ] mega_board 10;
   ]
 
 let suite =
   "test suite for builder.ml"
-  >::: List.flatten [ points_tests; trie_tests; board_tests ]
+  >::: List.flatten [ points_tests; dict_tests; trie_tests; board_tests ]
 
 let () = run_test_tt_main suite

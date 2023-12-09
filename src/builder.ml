@@ -162,7 +162,7 @@ module BuildBoard = struct
   let is_valid_word loc_list board =
     let rec is_valid_word_aux loc_list acc =
       match loc_list with
-      | [] -> true
+      | [] -> true (*should not happen*)
       | [ x ] -> not (List.mem x acc)
       | loc1 :: loc2 :: t ->
           is_valid_next_tile loc1 loc2
