@@ -383,32 +383,34 @@ let main () =
     GameBoard.solutions hashtable
   in
 
-  let top_possible_words_display =
-    W.text_display ~w:200 ~h:630
-      (convert_str_lst_to_str
-         (GameBoard.longest_words (board_solutions !board) 20)
-         true)
-  in
+  let top_possible_words_display = W.text_display ~w:200 ~h:630 "" in
 
   let display_top_possible_words () =
+    W.set_text top_possible_words_display "Computing...";
     let top_possible_words =
       GameBoard.longest_words (board_solutions !board) 20
     in
     W.set_text top_possible_words_display
-      (convert_str_lst_to_str top_possible_words true)
+      (convert_str_lst_to_str top_possible_words true);
+    W.update top_possible_words_display
   in
 
-  let restart_game () =
+  let update_solutions () =
+    let updater = display_top_possible_words in
+    ignore (Thread.create updater ())
+  in
+
+  let start_game () =
     board := GameBoard.new_board ();
     reset_tiles board_matrix;
     W.set_text word_field "";
     (* set_score 0; *)
     relabel_tiles !board;
-    display_top_possible_words ()
+    update_solutions ()
   in
 
   let restart_button =
-    let action _ = restart_game () in
+    let action _ = start_game () in
     W.button ~action ~kind:Button.Trigger "Start New Game"
   in
   let restart_button_flat =
@@ -565,11 +567,13 @@ let main () =
   in
 
   let start_button_normal_action input label _ =
+    start_game ();
     switch_mode 1;
-    update_timer_normal 60
+    update_timer_normal 2
   in
 
   let start_button_survival_action input label _ =
+    start_game ();
     switch_mode 1;
     update_timer_survival 20
   in
