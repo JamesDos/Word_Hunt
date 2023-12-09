@@ -324,10 +324,7 @@ let main () =
     L.flat ~hmargin:200 [ top_words_list; top_user_word_list ]
   in
 
-  let back_to_page2_button =
-    let action b = L.set_show page2 true in
-    W.button ~action "Back to Board"
-  in
+  let back_to_page2_button = W.button "Back to Board" in
 
   let page3 =
     let message = W.label ~size:50 " Thanks for playing!" in
@@ -342,7 +339,7 @@ let main () =
   in
 
   (* extra stuff ***************************************************************)
-  let use_tabs = true in
+  let use_tabs = false in
   (*let page2 = L.tower [ layout ] in*)
   let tabs =
     if use_tabs then
@@ -402,8 +399,15 @@ let main () =
     W.connect input label start_button_action Sdl.Event.[ mouse_button_down ]
   in
 
+  let back_to_page2_action _ _ _ = switch_mode 1 in
+
+  let c2 =
+    W.connect back_to_page2_button back_to_page2_button back_to_page2_action
+      Sdl.Event.[ mouse_button_down ]
+  in
+
   (*let layout = L.tower [ L.resident (W.label "Word Hunt"); table ] in*)
-  let board = Bogue.of_layout ~connections:[ c1 ] tabs in
+  let board = Bogue.of_layout ~connections:[ c1; c2 ] tabs in
   Bogue.run board
 
 let () =
