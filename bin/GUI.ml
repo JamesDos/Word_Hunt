@@ -105,25 +105,18 @@ let main () =
       Text_display.(page [ bold (para "Welcome to BnJ Word Hunt") ])
   in
 
+  let action_button_bg = Draw.(opaque yellow) |> Style.color_bg in
+
   let start_normal_button =
-    W.button
-      ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
-      ~bg_on:(Draw.(opaque red) |> Style.color_bg)
-      ~kind:Button.Switch "Play"
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Play"
   in
 
   let start_survival_button =
-    W.button
-      ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
-      ~bg_on:(Draw.(opaque red) |> Style.color_bg)
-      ~kind:Button.Switch "Play Survival Mode"
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Play Survival Mode"
   in
 
   let instructions_button =
-    W.button
-      ~bg_off:(Draw.(opaque yellow) |> Style.color_bg)
-      ~bg_on:(Draw.(opaque red) |> Style.color_bg)
-      ~kind:Button.Switch "How to Play"
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "How to Play"
   in
 
   let page1 =
@@ -472,7 +465,13 @@ let main () =
     L.flat ~hmargin:200 [ top_words_list; top_user_word_list ]
   in
 
-  let back_to_page2_button = W.button "Back to Board" in
+  let back_to_start_button =
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Main Menu"
+  in
+
+  let quit_button =
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Quit"
+  in
 
   let page3 =
     let message = W.label ~size:50 " Thanks for playing!" in
@@ -481,8 +480,9 @@ let main () =
       [
         L.resident ~w:1000 ~h:150 message;
         display_lists;
-        L.resident ~w:750 ~h:80 back_to_page2_button;
         L.resident ~w:1000 ~h:80 score_message;
+        L.resident ~w:1000 ~h:100 back_to_start_button;
+        L.resident ~w:1000 ~h:100 quit_button;
       ]
   in
 
@@ -578,37 +578,44 @@ let main () =
     update_timer_survival 20
   in
 
-  let c1 =
+  let conns = [] in
+
+  let conns =
     W.connect start_normal_button welcome_label start_button_normal_action
       Sdl.Event.[ mouse_button_down ]
+    :: conns
   in
 
-  let c2 =
+  let conns =
     W.connect start_survival_button welcome_label start_button_survival_action
       Sdl.Event.[ mouse_button_down ]
+    :: conns
   in
 
-  let back_to_page2_action _ _ _ = switch_mode 0 in
+  let back_to_start_action _ _ _ = switch_mode 0 in
 
-  let c3 =
-    W.connect back_to_page2_button back_to_page2_button back_to_page2_action
+  let conns =
+    W.connect back_to_start_button back_to_start_button back_to_start_action
       Sdl.Event.[ mouse_button_down ]
+    :: conns
   in
 
   let to_instructions_action _ _ _ = switch_mode 3 in
 
-  let c4 =
+  let conns =
     W.connect instructions_button instructions_button to_instructions_action
       Sdl.Event.[ mouse_button_down ]
+    :: conns
   in
 
-  let c5 =
+  let conns =
     W.connect back_to_menu_instructions_button back_to_menu_instructions_button
-      back_to_page2_action
+      back_to_start_action
       Sdl.Event.[ mouse_button_down ]
+    :: conns
   in
 
-  let board = Bogue.of_layout ~connections:[ c1; c2; c3; c4; c5 ] tabs in
+  let board = Bogue.of_layout ~connections:conns tabs in
   Bogue.run board
 
 let () =
