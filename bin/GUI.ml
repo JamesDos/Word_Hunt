@@ -207,12 +207,17 @@ let main () =
     W.label ~size:30 ("Final score: " ^ string_of_int !score)
   in
 
-  (*[update_score word] mutates [score] and updates the score based off of the score
-     of [word] determiend by score_word*)
-  let update_score word =
-    if String.length word > 2 then score := !score + score_word word;
+  (*[set_score s] mutates [score] to [s] and updates relevant display*)
+  let set_score s =
+    score := s;
     W.set_text score_board ("Score: " ^ string_of_int !score);
     W.set_text score_message ("Final score: " ^ string_of_int !score)
+  in
+
+  (*[update_score word] sets the new score based on the value of the word,
+     as determined by score_word*)
+  let update_score word =
+    if String.length word > 2 then set_score (!score + score_word word)
   in
 
   (*[is_valid_tile loc] returns whether the tile at location [loc] is valid.
@@ -401,7 +406,7 @@ let main () =
     W.set_text word_field "";
     entered_words := [];
     update_used_words_field !entered_words;
-    (* set_score 0; *)
+    set_score 0;
     relabel_tiles !board;
     update_solutions ()
   in
