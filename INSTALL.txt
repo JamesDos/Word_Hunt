@@ -1,3 +1,5 @@
 1. Open terminal and run dune build
-2. Run "make game" in the terminal
-3. Follow the instructions presented by the terminal and have fun playing
+2. Run "make GUI" in the terminal
+3. Full screen the pop-up
+4. Read "How to Play" if you are unfamilar with Word Hunt
+5. Choose the gamemode you want to play and have fun! 

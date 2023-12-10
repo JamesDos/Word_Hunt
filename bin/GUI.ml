@@ -59,6 +59,8 @@ let main () =
 
   let entered_locs = ref [] in
 
+  let game_ended = ref false in
+
   (*first element of has_entered_word is if the user has entered a valid word,
     second element of has entered_word is if the state of the first element has
     been toggled previously by the enter button or timer. If the state has been
@@ -88,7 +90,9 @@ let main () =
 
   (*[add_word word] mutates [entered_words] by appending [word] to it. Requires
     [word] is not a member of [entered_words]*)
-  let add_word word = entered_words := word :: !entered_words in
+  let add_word word =
+    if not !game_ended then entered_words := word :: !entered_words
+  in
 
   let toggle_has_entered_word_enter n = has_entered_word := (true, false, n) in
 
@@ -221,7 +225,8 @@ let main () =
   (*[update_score word] sets the new score based on the value of the word,
      as determined by score_word*)
   let update_score word =
-    if String.length word > 2 then set_score (!score + score_word word)
+    if String.length word > 2 && not !game_ended then
+      set_score (!score + score_word word)
   in
 
   (*[is_valid_tile loc] returns whether the tile at location [loc] is valid.
@@ -406,6 +411,7 @@ let main () =
 
   let start_game () =
     board := GameBoard.new_board ();
+    game_ended := false;
     reset_tiles board_matrix;
     W.set_text word_field "";
     entered_words := [];
@@ -416,11 +422,15 @@ let main () =
   in
 
   let restart_button =
-    let action _ = start_game () in
+    let action _ =
+      start_game ();
+      game_ended := false
+    in
     W.button ~action ~kind:Button.Trigger "Start New Game"
   in
+
   let restart_button_flat =
-    L.flat ~margins:100 [ L.resident ~w:(width * 2) restart_button ]
+    L.flat ~hmargin:500 [ L.resident ~w:(width * 2) ~h:100 restart_button ]
   in
 
   let page2_first_row =
@@ -482,6 +492,10 @@ let main () =
     W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Main Menu"
   in
 
+  let back_button =
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Back To Board"
+  in
+
   let quit_button =
     W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Quit"
   in
@@ -495,6 +509,7 @@ let main () =
         display_lists;
         L.resident ~w:1000 ~h:80 score_message;
         L.resident ~w:1000 ~h:100 back_to_start_button;
+        L.resident ~w:1000 ~h:100 back_button;
         L.resident ~w:1000 ~h:100 quit_button;
       ]
   in
@@ -547,6 +562,7 @@ let main () =
         loop (remaining_time - 1))
       else (
         W.set_text timer_label "Time is up";
+        game_ended := true;
         W.update timer_label;
         switch_page Results)
     in
@@ -573,6 +589,7 @@ let main () =
       else (
         W.set_text timer_label "Time is up";
         W.update timer_label;
+        game_ended := true;
         switch_page Results)
     in
     ignore (Thread.create loop n)
@@ -605,6 +622,7 @@ let main () =
   in
 
   let back_to_start_action _ _ _ = switch_page Intro in
+  let back_to_page2_action _ _ _ = switch_page Game in
 
   let conns =
     W.connect back_to_start_button back_to_start_button back_to_start_action
@@ -623,6 +641,18 @@ let main () =
   let conns =
     W.connect back_to_menu_instructions_button back_to_menu_instructions_button
       back_to_start_action
+      Sdl.Event.[ mouse_button_down ]
+    :: conns
+  in
+
+  let conns =
+    W.connect restart_button restart_button back_to_start_action
+      Sdl.Event.[ mouse_button_down ]
+    :: conns
+  in
+
+  let conns =
+    W.connect back_button back_button back_to_page2_action
       Sdl.Event.[ mouse_button_down ]
     :: conns
   in
