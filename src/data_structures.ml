@@ -5,11 +5,9 @@ module Trie = struct
     children : (char, trie_node) Hashtbl.t;
   }
 
-  (**[create_node] creates an empty trie*)
   let create_node () =
     { value = None; is_end_of_word = false; children = Hashtbl.create 10 }
 
-  (**[insert_word node word] inserts char list [word] into the trie [node]*)
   let rec insert_word word node =
     match word with
     | [] -> node.is_end_of_word <- true
@@ -23,7 +21,6 @@ module Trie = struct
         in
         insert_word tl next_node
 
-  (**[search_word node word] returns whether [word] is a present in the trie [node]*)
   let rec search_word node word =
     match word with
     | [] -> node.is_end_of_word
@@ -33,16 +30,11 @@ module Trie = struct
           search_word next_node tl
         with Not_found -> false)
 
-  (** [to_char_list word] is a list of characters of [word] in their original order.
-      Example: to_char_list cat is ['c'; 'a'; 't'] *)
   let to_char_list word = List.of_seq (String.to_seq word)
 
-  (**[insert_list_of_words node words] inserts each word in string list [words] 
-      into trie [node]*)
   let insert_list_of_words node words =
     List.iter (fun word -> insert_word (to_char_list word) node) words
 
-  (**[to_string trie] returns a string representation of [trie]*)
   let to_string trie =
     let rec to_string_helper node depth =
       let indent = String.make (depth * 2) ' ' in
@@ -64,7 +56,6 @@ module Trie = struct
 end
 
 module Dictionary = struct
-  (**txt_to_list reads the text file [dictionary] and makes it into a list*)
   let txt_to_list dictionary =
     let ic = open_in dictionary in
     let rec loop acc =
@@ -77,13 +68,9 @@ module Dictionary = struct
     in
     loop []
 
-  (** List of all the valid words in the dictionary*)
   let dictionary_list = txt_to_list "data/scrabble_dict.txt"
-
-  (** is_word returns whether [word] is a valid word in the english dictionary*)
   let is_word word = List.mem word dictionary_list
 
-  (**Trie representation of dictionary_list*)
   let trie =
     let root = Trie.create_node () in
     Trie.insert_list_of_words root dictionary_list;

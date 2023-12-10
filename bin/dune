@@ -7,8 +7,3 @@
  (name GUI)
  (modules GUI)
  (libraries Wordhunt str bogue))
-
-(executable
- (name timer)
- (modules timer)
- (libraries Wordhunt str bogue))

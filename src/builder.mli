@@ -1,3 +1,5 @@
+(**Builder contains the [BuildBoard] module*)
+
 module BuildBoard : sig
   (**A BuildBoard represents a 4x4 word hunt board consisting of lettered tiles.*)
 
@@ -11,7 +13,8 @@ module BuildBoard : sig
 
   val fill_board : string array array -> string array array
   (**[fill_board array_2d] fills the 2d string array [array_2d] with random 
-     characters using [random_char]*)
+     characters using [random_char]. Requires array_2d is has rows and columns
+     greater than 0.*)
 
   val new_board : unit -> string array array
   (** [new_board ()] generates a new 2d string array board*)
@@ -93,7 +96,8 @@ module BuildBoard : sig
 
   val longest_words : string list -> int -> string list
   (**[longest_words word_list n] is a list containg the [n] longest words in 
-      [word_list]. This list is sorted decreasingly from longest length words. 
-      If [n] is greater than the length of [word_list], then the returned list
-      is the same length as [word_list]*)
+      [word_list]. This list is sorted decreasingly from longest length words,
+      and words of the same length are sorted alphabetically. If [n] is greater 
+      than the length of [word_list], then the returned list is the same length 
+      as [word_list]. Requires [n] is non negative.*)
 end

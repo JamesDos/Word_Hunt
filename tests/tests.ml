@@ -6,6 +6,53 @@ module Test_BuildBoard = Builder.BuildBoard
 module TestDict = Data_structures.Dictionary
 module TestTrie = Data_structures.Trie
 
+(*Test Plan ********************************************************************)
+(*
+
+In our testing approach we used Ounit testing to automatically test the modules 
+in builder.ml and data_structures.ml, while we used manual / play testing for 
+game.ml and GUI.ml. 
+
+We used an Ounit test suite to test individual functions of the modules in these 
+files and we utilized both black box and glass box tests when developing our test 
+suite. We used black box testing by first analyzing the function signature and
+specificaiton for the function we want to test, and then writing some test cases
+before implementing the function, ensuring that we have some tests for that 
+function regardless of how we implemented it. Additionally, after implemention
+the functions in each modules, we used glassbox testing to further test our 
+functions through bisect. We used bisect to ensure that most of the execution 
+pathways of our functions have been covered in our test suite and added test
+cases to test the pathways that our black box tests didn't cover. 
+
+We believe that is testing approach using Ounit testing demonstrates the 
+correctness of our system since it utlizes both black box and glass box testing
+alongside bisect to ensure that the functions used by the GUI are correct.  
+
+We used play testing to test GUI.ml and game.ml, as these are the executables 
+that run the game that the user plays and we found it difficult to test user 
+interaction with an Ounit test suite. 
+
+When doing play testing for our GUI, we tried to think of many different ways in
+which users can interact with the system. For example, when inputting words 
+we tested conventional inputs by inputting valid and invalid words in the 
+correct tile order. When testing unconventional inputs, we tested inputting the
+same words multiple times, inputting valid, attempting to connect non-adjacent 
+tiles, attempting to use the same tile to multiple times for a word, entering 
+nothing, combinations of these, and more. We were able to verify whether or not
+tests passed or failed by looking at visual changes in our GUI as well as through
+print statements tracking the state of the system after certain actions were done.
+
+We believe that our testing approach through play testing demonstrates the 
+correctness of our system since we have play tested our game many times and
+attempted both conventional and unconventional ways in which the user can 
+interact with the system. Through visual updates in the GUI as well as print
+messages in the terminal, we were able to verify whether our tests passed or 
+failed.
+
+*)
+
+(*******************************************************************************)
+
 (** Printing functions taken from A2*)
 
 (** [cmp_bag_like_lists lst1 lst2] compares two lists to see whether they are
@@ -245,6 +292,10 @@ let mini_board =
   start
 
 let mega_board = Array.make_matrix 5 5 "x"
+let empty_board = Array.make_matrix 0 0 "@"
+let one_by_one_board = Array.make_matrix 1 1 "@"
+let two_by_two_board = Array.make_matrix 2 2 "@"
+let four_by_four_board = Array.make_matrix 4 4 "@"
 
 (*prints board [b] and its solutions*)
 let print_board_solutions b =
@@ -254,6 +305,20 @@ let print_board_solutions b =
     Test_BuildBoard.print_board b
   in
   print_endline (pp_list pp_string (Test_BuildBoard.solutions empty_hashtable))
+
+(**[test_fill_board] is a helper function to test Builder.fill_board*)
+let test_fill_board name arr =
+  let new_arr_not_filled = Array.copy arr in
+  let new_arr =
+    let copy = Array.copy arr in
+    Test_BuildBoard.fill_board copy
+  in
+  name >:: fun _ -> assert_bool "boards are equal" (new_arr_not_filled = new_arr)
+
+(**[test_print_board] is a helper function to test Builder.fill_board*)
+let test_print_board name expected_output arr =
+  name >:: fun _ ->
+  assert_equal expected_output (Test_BuildBoard.print_board arr)
 
 (**[test_make_word] is a helper function to test Builder.make_word*)
 let test_make_word name expected_output lst board =
@@ -276,41 +341,31 @@ let test_solve name expected_output input num =
     expected_output
     (Test_BuildBoard.longest_words (Test_BuildBoard.solutions hashtable) num)
 
+(**[test_longest_words] is a helper function to test Builder.longest_words*)
+let test_longest_words name expected_output words_list n =
+  name >:: fun _ ->
+  assert_equal expected_output (Test_BuildBoard.longest_words words_list n)
+
 let board_tests =
   [
-    (*find_chars tests*)
-    (*
-    ( "find_chars board with all the same tiles" >:: fun _ ->
-      assert_equal
-        [
-          (0, 0);
-          (0, 1);
-          (0, 2);
-          (0, 3);
-          (1, 0);
-          (1, 1);
-          (1, 2);
-          (1, 3);
-          (2, 0);
-          (2, 1);
-          (2, 2);
-          (2, 3);
-          (3, 0);
-          (3, 1);
-          (3, 2);
-          (3, 3);
-        ]
-        (Test_BuildBoard.find_chars "a" b1) );
-    ( "find_chars board with only one tile of given char" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple)
-        [ Loc (0, 0) ]
-        (Test_BuildBoard.find_chars 'b' b2) );
-    ( "find_chars board with only multiples tiles of given char" >:: fun _ ->
-      assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_tuple)
-        [ (3, 0); (1, 3); (2, 2); (3, 1) ]
-        (Test_BuildBoard.find_chars 'b' b3) );*)
-
-    (*TODO: Make longest_words tests*)
+    (*fill_board tests*)
+    test_fill_board "fill 1x1 board" one_by_one_board;
+    test_fill_board "fill 2x2 board" two_by_two_board;
+    test_fill_board "fill 4x4 board" four_by_four_board;
+    (*longest_words tests*)
+    test_longest_words "longest words empty list; n = 0" [] [] 0;
+    test_longest_words "longest words empty list; n = 10" [] [] 10;
+    test_longest_words "longest words singleton list; n = 1" [ "hi" ] [ "hi" ] 1;
+    test_longest_words "longest words singleton list; n > 1" [ "hi" ] [ "hi" ]
+      10;
+    test_longest_words "longest words multiple element list; n < length of list"
+      [ "there"; "bye" ] [ "hi"; "bye"; "there" ] 2;
+    test_longest_words "longest words multiple element list; n > length of list"
+      [ "there"; "bye"; "hi" ] [ "there"; "bye"; "hi" ] 100;
+    test_longest_words
+      "longest words multiple element list; words are all same length so \
+       sorted alphabetically"
+      [ "a"; "b"; "c" ] [ "c"; "a"; "b" ] 3;
     (*can try board tests on smaller boards*)
 
     (*make_word tests*)

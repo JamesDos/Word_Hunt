@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>data_structures.ml &mdash; Coverage report</title>
-    <meta name="description" content="68.18% coverage in src/data_structures.ml">
+    <meta name="description" content="70.45% coverage in src/data_structures.ml">
     <link rel="stylesheet" href="../coverage.css"/>
     <script src="../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">src/</span>data_structures.ml
         </a>
       </h1>
-      <h2>68.18%</h2>
+      <h2>70.45%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="bottom:48.35%"></span>
@@ -26,7 +26,6 @@
       <span class="unvisited" style="bottom:40.66%"></span>
       <span class="unvisited" style="bottom:36.26%"></span>
       <span class="unvisited" style="bottom:32.97%"></span>
-      <span class="unvisited" style="bottom:7.69%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -114,7 +113,7 @@
 <a id="L81"></a><span class="visited"> </span>
 <a id="L82"></a><span > </span>
 <a id="L83"></a><span > </span>
-<a id="L84"></a><span class="unvisited"> </span>
+<a id="L84"></a><span class="visited"> </span>
 <a id="L85"></a><span > </span>
 <a id="L86"></a><span > </span>
 <a id="L87"></a><span > </span>
@@ -245,17 +244,17 @@
 
   (**[search_word node word] returns whether [word] is a present in the trie [node]*)
   let rec search_word node word =
-    <span data-count="80608578">m</span>atch word with
-    | <span data-count="856">[</span>] -&gt; node.is_end_of_word
-    | <span data-count="80607722">h</span>d :: tl -&gt; (
+    <span data-count="109210685">m</span>atch word with
+    | <span data-count="881">[</span>] -&gt; node.is_end_of_word
+    | <span data-count="109209804">h</span>d :: tl -&gt; (
         try
           let next_node = Hashtbl.find node.children hd in
-          <span data-count="44519632">s</span>earch_wor<span data-count="44519632">d</span> next_node tl
-        with <span data-count="36088090">N</span>ot_found -&gt; false)
+          <span data-count="49062447">s</span>earch_wor<span data-count="49062447">d</span> next_node tl
+        with <span data-count="60147357">N</span>ot_found -&gt; false)
 
   (** [to_char_list word] is a list of characters of [word] in their original order.
       Example: to_char_list cat is ['c'; 'a'; 't'] *)
-  let to_char_list word = <span data-count="36927449">L</span>ist.of_seq (String.to_se<span data-count="36927449">q</span> word)
+  let to_char_list word = <span data-count="60986741">L</span>ist.of_seq (String.to_se<span data-count="60986741">q</span> word)
 
   (**[insert_list_of_words node words] inserts each word in string list [words] 
       into trie [node]*)
@@ -301,7 +300,7 @@ module Dictionary = struct
   let dictionary_list = txt_to_lis<span data-count="3">t</span> "data/scrabble_dict.txt"
 
   (** is_word returns whether [word] is a valid word in the english dictionary*)
-  let is_word word = <span data-count="0">L</span>ist.mem word dictionary_list
+  let is_word word = <span data-count="5">L</span>ist.mem word dictionary_list
 
   (**Trie representation of dictionary_list*)
   let trie =

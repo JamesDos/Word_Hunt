@@ -428,6 +428,7 @@ let main () =
       start_game ();
       game_ended := true
     in
+
     W.button ~action ~kind:Button.Trigger "Start New Game"
   in
 
