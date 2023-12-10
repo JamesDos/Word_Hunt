@@ -415,6 +415,8 @@ let main () =
     reset_tiles board_matrix;
     W.set_text word_field "";
     entered_words := [];
+    entered_locs := [];
+    has_entered_word := (false, false, 0);
     update_used_words_field !entered_words;
     set_score 0;
     relabel_tiles !board;
