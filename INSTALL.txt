@@ -1,5 +1,8 @@
-1. Open terminal and run dune build
-2. Run "make GUI" in the terminal
-3. Full screen the pop-up
-4. Read "How to Play" if you are unfamilar with Word Hunt
-5. Choose the gamemode you want to play and have fun! 
+1. Open terminal and install bogue if you don't have it installed
+- First install its prerequisites by typing "opam install dune tsdl tsdl-image tsdl-ttf" in the terminal
+- Then type "opam install bogue"
+2. Open terminal and run make build
+3. Run "make GUI" in the terminal
+4. Full screen the pop-up
+5. Read "How to Play" if you are unfamilar with Word Hunt
+6. Choose the gamemode you want to play and have fun! 
