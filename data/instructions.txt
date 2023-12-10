@@ -18,6 +18,7 @@ Forming Words:
 - CAT, DOGS, WORDS, and TORN are all examples of valid words for the board above
 - AT would be rejected since it is less than length 2
 - TFGD would be rejected since its is not a real word
+- If you input the same word multiple times, you will not get additional points
 
 Our game comes in two modes:
 

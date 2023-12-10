@@ -118,7 +118,7 @@ let main () =
   let action_button_bg = Draw.(opaque yellow) |> Style.color_bg in
 
   let start_normal_button =
-    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Play"
+    W.button ~bg_off:action_button_bg ~kind:Button.Trigger "Play Normal Mode"
   in
 
   let start_survival_button =
@@ -424,7 +424,7 @@ let main () =
   let restart_button =
     let action _ =
       start_game ();
-      game_ended := false
+      game_ended := true
     in
     W.button ~action ~kind:Button.Trigger "Start New Game"
   in
@@ -559,6 +559,7 @@ let main () =
         W.set_text timer_label ("Time Left: " ^ string_of_int remaining_time);
         Unix.sleep 1;
         W.update timer_label;
+        if !game_ended then Thread.exit ();
         loop (remaining_time - 1))
       else (
         W.set_text timer_label "Time is up";
@@ -579,11 +580,13 @@ let main () =
             W.set_text timer_label
               ("Time Left: " ^ string_of_int new_remaining_time);
             W.update timer_label;
+            if !game_ended then Thread.exit ();
             Unix.sleep 1;
             loop (new_remaining_time - 1)
         | _ ->
             W.set_text timer_label ("Time Left: " ^ string_of_int remaining_time);
             W.update timer_label;
+            if !game_ended then Thread.exit ();
             Unix.sleep 1;
             loop (remaining_time - 1))
       else (
