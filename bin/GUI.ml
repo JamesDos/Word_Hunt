@@ -365,7 +365,7 @@ let main () =
       else
         let label = make_mini_tile i j in
         labels.(i).(j) <- label;
-        make_mini_rowi (L.resident ~w:25 ~h:25 label :: acc) i (j - 1)
+        make_mini_rowi (L.resident ~w:50 ~h:50 label :: acc) i (j - 1)
     in
 
     let mini_rows = [] in

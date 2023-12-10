@@ -1,6 +1,9 @@
 (**Data_structures contains the modules [Trie] and [Dictionary]*)
 
 module Trie : sig
+  (** A Trie is a tree of characters used to efficiently store and lookup words 
+      in the english language*)
+
   type trie_node = {
     value : char option;
     mutable is_end_of_word : bool;
@@ -30,6 +33,9 @@ module Trie : sig
 end
 
 module Dictionary : sig
+  (**A Dictionary represents the scrabble dictionary used to verify valid english
+    words in word hunt*)
+
   val txt_to_list : string -> string list
   (**[txt_to_list dictionary] reads the string name of the text file [dictionary] 
       and makes it into a list with each element of the list being a word in the

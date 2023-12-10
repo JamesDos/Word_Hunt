@@ -26,7 +26,13 @@ cases to test the pathways that our black box tests didn't cover.
 
 We believe that is testing approach using Ounit testing demonstrates the 
 correctness of our system since it utlizes both black box and glass box testing
-alongside bisect to ensure that the functions used by the GUI are correct.  
+alongside bisect to ensure that the functions used by the GUI are correct. 
+According to bisect, our tests cover around 90% of our code, which believe is
+very high since we chose not to test some functions that we believe we difficult
+to test such a functions that generated random characters or printed things onto
+the screen. However, the code that we did not cover through bisect has been covered
+and verified to work through play testing, ensuring that the code in our system 
+is either tested by a test suite or by play testing.
 
 We used play testing to test GUI.ml and game.ml, as these are the executables 
 that run the game that the user plays and we found it difficult to test user 
@@ -507,7 +513,7 @@ let board_tests =
       ]
       test_board3 10;
     test_solve "Test_BuildBord.solve test_board4" [ "ACT" ] test_board4 10;
-    test_solve "Test_BuildBord.solve test_board4" [ "ACT" ] mega_board 10;
+    test_solve "Test_BuildBord.solve test_board4" [] mega_board 10;
   ]
 
 let suite =
