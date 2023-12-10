@@ -1,14 +1,5 @@
 (library
- (name builder)
- (modules builder)
- (public_name Builder)
- (libraries Data_Structures)
- (instrumentation
-  (backend bisect_ppx)))
-
-(library
- (name data_structures)
- (modules data_structures)
- (public_name Data_Structures)
+ (name wordhunt)
+ (public_name Wordhunt)
  (instrumentation
   (backend bisect_ppx)))

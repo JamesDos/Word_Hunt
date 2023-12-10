@@ -1,5 +1,5 @@
 (executable
  (name tests)
- (libraries Builder Data_Structures ounit2)
+ (libraries Wordhunt ounit2)
  (instrumentation
   (backend bisect_ppx)))

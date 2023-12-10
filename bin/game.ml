@@ -1,10 +1,11 @@
+open Wordhunt
 open Builder
 open Data_structures
 open Str
 module GameDict = Data_structures.Dictionary
 module GameBoard = Builder.BuildBoard
 
-let board = GameBoard.game_board
+let board = GameBoard.new_board ()
 
 let eval_input str =
   let string_to_tuple_list str =

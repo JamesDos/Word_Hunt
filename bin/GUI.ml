@@ -2,6 +2,7 @@ open Bogue
 open Tsdl
 open Unix
 open Thread
+open Wordhunt
 module W = Widget
 module L = Layout
 module T = Trigger
@@ -15,7 +16,7 @@ type page = Intro | Game | Results | Instructions
 
 let reset_board () =
   let module New_board = Builder.BuildBoard in
-  New_board.board
+  New_board.new_board ()
 
 (*used for debugging*)
 let pp_list pp_elt lst =
@@ -38,6 +39,9 @@ let pp_tuple (s : GameBoard.location) =
 let main () =
   (*useful functions*)
   let array_of_list lst = Array.of_list (List.rev !lst) in
+  (*[convert_str_lst_to_str str_lst b] converts a string list [str_list] to a
+     string that can be used for listing words. if [b] is true then the list will
+    contain numbers, otherwise it won't/*)
   let convert_str_lst_to_str str_lst b =
     if b then
       let formatted_lines =
@@ -332,20 +336,20 @@ let main () =
   in
 
   let reset_text_field m =
-    let field_word = W.get_text word_field in
-    if
-      true (* set to false to always accept every word *)
-      && ((not (GameBoard.is_valid_word (List.rev !entered_locs) !board))
-         || List.mem field_word !entered_words)
-    then (
-      print_endline "not a valid word";
-      print_endline (GameBoard.make_word (List.rev !entered_locs) !board))
-    else (
-      print_endline "is a valid word";
-      add_word field_word;
-      update_score field_word;
-      update_used_words_field (List.rev !entered_words));
-    toggle_has_entered_word_enter (calculate_extra_time field_word);
+    (let field_word = W.get_text word_field in
+     if
+       true (* set to false to always accept every word *)
+       && ((not (GameBoard.is_valid_word (List.rev !entered_locs) !board))
+          || List.mem field_word !entered_words)
+     then (
+       print_endline "not a valid word";
+       print_endline (GameBoard.make_word (List.rev !entered_locs) !board))
+     else (
+       print_endline "is a valid word";
+       add_word field_word;
+       update_score field_word;
+       update_used_words_field (List.rev !entered_words);
+       toggle_has_entered_word_enter (calculate_extra_time field_word)));
     W.set_text word_field "";
     reset_tiles m
   in
@@ -557,7 +561,7 @@ let main () =
             toggle_has_entered_word_timer ();
             let new_remaining_time = remaining_time + n in
             W.set_text timer_label
-              ("Time Left: " ^ string_of_int (new_remaining_time + n));
+              ("Time Left: " ^ string_of_int new_remaining_time);
             W.update timer_label;
             Unix.sleep 1;
             loop (new_remaining_time - 1)

@@ -1,14 +1,14 @@
 (executable
  (name game)
  (modules game)
- (libraries Builder Data_Structures str))
+ (libraries Wordhunt str))
 
 (executable
  (name GUI)
  (modules GUI)
- (libraries Builder Data_Structures str bogue))
+ (libraries Wordhunt str bogue))
 
 (executable
  (name timer)
  (modules timer)
- (libraries Builder Data_Structures str bogue))
+ (libraries Wordhunt str bogue))

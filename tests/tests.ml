@@ -1,4 +1,5 @@
 open OUnit2
+open Wordhunt
 open Builder
 open Data_structures
 module Test_BuildBoard = Builder.BuildBoard
@@ -38,69 +39,19 @@ let pp_list pp_elt lst =
   in
   "[" ^ pp_elts lst ^ "]"
 
+(*[list_or_loc_list loc_list acc] is the location list [loc_list] as a list of tuples*)
+
 let rec list_of_loc_list (loc_list : Test_BuildBoard.location list) acc =
   match loc_list with
   | [] -> List.rev acc
   | Loc (x, y) :: t -> list_of_loc_list t ((x, y) :: acc)
 
+(*[loc_list_of_list lst acc] is the tuple list [lst] as a location list*)
+
 let rec loc_list_of_list lst acc : Test_BuildBoard.location list =
   match lst with
   | [] -> List.rev acc
   | (x, y) :: t -> loc_list_of_list t (Loc (x, y) :: acc)
-
-(*
-let valid_points_tests =
-  [
-    (*Tests for is_corner*)
-    ( "top left corner tile" >:: fun _ ->
-      assert_equal true (Test_BuildBoard.is_corner (0, 0)) );
-    ( "bottom left corner tile" >:: fun _ ->
-      assert_equal true (Test_BuildBoard.is_corner (3, 0)) );
-    ( "top right corner tile" >:: fun _ ->
-      assert_equal true (Test_BuildBoard.is_corner (0, 3)) );
-    ( "bottom right corner tile" >:: fun _ ->
-      assert_equal true (Test_BuildBoard.is_corner (3, 3)) );
-    ( "top edge tile" >:: fun _ ->
-      assert_equal false (Test_BuildBoard.is_corner (0, 1)) );
-    ( "left edge tile" >:: fun _ ->
-      assert_equal false (Test_BuildBoard.is_corner (2, 0)) );
-    ( "center tile" >:: fun _ ->
-      assert_equal false (Test_BuildBoard.is_corner (2, 2)) );
-    (*Tests for is_edge*)
-    ( "corner tile" >:: fun _ ->
-      assert_equal false (Test_BuildBoard.is_edge (0, 0)) );
-    ( "left edge tile" >:: fun _ ->
-      assert_equal true (Test_BuildBoard.is_edge (2, 0)) );
-    ( "bottom edge tile" >:: fun _ ->
-      assert_equal true (Test_BuildBoard.is_edge (3, 2)) );
-    ( "center tile" >:: fun _ ->
-      assert_equal false (Test_BuildBoard.is_edge (1, 2)) );
-    (*Tests for valid_moves*)
-    ( "valid_moves top left corner tile" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
-        [ (0, 1); (1, 0); (1, 1) ]
-        (Test_BuildBoard.valid_moves (0, 0)) );
-    ( "valid_moves bottom right coner tile" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
-        [ (2, 3); (3, 2); (2, 2) ]
-        (Test_BuildBoard.valid_moves (3, 3)) );
-    ( "valid_moves top edge tile" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
-        [ (0, 1); (1, 1); (1, 2); (1, 3); (0, 3) ]
-        (Test_BuildBoard.valid_moves (0, 2)) );
-    ( "valid_moves left edge tile" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
-        [ (0, 0); (0, 1); (1, 1); (2, 1); (2, 0) ]
-        (Test_BuildBoard.valid_moves (1, 0)) );
-    ( "valid_moves center tile" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
-        [ (1, 1); (1, 2); (1, 3); (2, 1); (3, 1); (3, 2); (3, 3); (2, 3) ]
-        (Test_BuildBoard.valid_moves (2, 2)) );
-    ( "valid_moves center tile" >:: fun _ ->
-      assert_equal ~printer:(pp_list pp_tuple) ~cmp:cmp_bag_like_lists
-        [ (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (2, 2); (2, 1); (1, 1) ]
-        (Test_BuildBoard.valid_moves (1, 2)) );
-  ]*)
 
 (**[test_valid_pos] is a helper function to test [Builder.is_valid_pos]*)
 let test_valid_pos name expected_output (x, y) =
@@ -123,9 +74,14 @@ let test_valid_next_tile name expected_output (x1, y1) (x2, y2) =
 let points_tests =
   [
     (*is_valid_pos tests*)
-    test_valid_pos "valid pos corner (0, 0)" true (0, 0);
-    test_valid_pos "valid pos edge (1, 3)" true (1, 3);
+    test_valid_pos "valid pos TL corner (0, 0)" true (0, 0);
+    test_valid_pos "valid pos BR corner (3, 3)" true (0, 0);
+    test_valid_pos "valid pos Bottom edge (1, 3)" true (3, 2);
+    test_valid_pos "valid pos Right edge (1, 3)" true (1, 3);
     test_valid_pos "valid pos center tile (2, 1)" true (2, 1);
+    test_valid_pos "valid pos center tile (1, 1)" true (1, 1);
+    test_valid_pos "non valid position (0, 4)" false (0, 4);
+    test_valid_pos "non valid position (4, 2)" false (4, 2);
     (*valid_moves tests*)
     test_valid_moves "valid_moves top left corner tile"
       [ (0, 1); (1, 0); (1, 1) ]
@@ -145,6 +101,8 @@ let points_tests =
     test_valid_moves "valid_moves center tile (1, 2)"
       [ (0, 1); (0, 2); (0, 3); (1, 3); (2, 3); (2, 2); (2, 1); (1, 1) ]
       (1, 2);
+    test_valid_moves "valid_moves non-board tile (4, 4)" [] (4, 4);
+    test_valid_moves "valid_moves non-board tile (-1, 3)" [] (-1, 3);
     (*test is_valid_next_tile*)
     test_valid_next_tile "horizontally adjacent tiles" true (0, 0) (0, 1);
     test_valid_next_tile "vertically adjacent tiles" true (0, 0) (1, 0);
@@ -351,6 +309,10 @@ let board_tests =
       assert_equal ~cmp:cmp_bag_like_lists ~printer:(pp_list pp_tuple)
         [ (3, 0); (1, 3); (2, 2); (3, 1) ]
         (Test_BuildBoard.find_chars 'b' b3) );*)
+
+    (*TODO: Make longest_words tests*)
+    (*can try board tests on smaller boards*)
+
     (*make_word tests*)
     test_make_word "make word empty loc lst" "" [] test_board1;
     test_make_word "make word singeton loc lst" "C" [ (0, 0) ] test_board1;
