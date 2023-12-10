@@ -355,7 +355,7 @@ let main () =
     let labels = Array.make_matrix 4 4 (W.label "*") in
 
     let make_mini_tile i j =
-      let label = W.label ~size:20 "X" in
+      let label = W.label "X" in
       labels.(i).(j) <- label;
       label
     in
@@ -585,7 +585,7 @@ let main () =
   in
 
   let page3 =
-    let message = W.label ~size:50 " Thanks for playing!" in
+    let message = W.label ~size:50 "Thanks for playing!" in
 
     L.tower
       [
